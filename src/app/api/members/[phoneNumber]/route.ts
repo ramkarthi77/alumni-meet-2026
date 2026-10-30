@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { updateMemberSchema } from '@/lib/validation'
 import { requireAuth } from '@/lib/auth/session'
+import type { Prisma } from '@prisma/client'
 
 type Params = { params: { phoneNumber: string } }
 
@@ -58,16 +59,16 @@ export async function PATCH(req: NextRequest, { params }: Params) {
 
   const d = parsed.data
   const updateData: Record<string, unknown> = {}
-  if (d.name               !== undefined) updateData.name               = d.name
-  if (d.classBatch         !== undefined) updateData.classBatch         = d.classBatch
-  if (d.group              !== undefined) updateData.group              = d.group || null
-  if (d.numberOfAdults     !== undefined) updateData.numberOfAdults     = d.numberOfAdults
-  if (d.numberOfKids       !== undefined) updateData.numberOfKids       = d.numberOfKids
-  if (d.contributionAmount !== undefined) updateData.contributionAmount = d.contributionAmount
-  if (d.email              !== undefined) updateData.email              = d.email || null
-  if (d.spouseName         !== undefined) updateData.spouseName         = d.spouseName || null
-  if (d.profession         !== undefined) updateData.profession         = d.profession || null
-  if (d.dateOfBirth        !== undefined) updateData.dateOfBirth        = d.dateOfBirth ? new Date(d.dateOfBirth) : null
+  if (d.name                !== undefined) updateData.name               = d.name
+  if (d.classBatch          !== undefined) updateData.classBatch         = d.classBatch
+  if (d.group               !== undefined) updateData.group              = d.group || null
+  if (d.numberOfAdults      !== undefined) updateData.numberOfAdults     = d.numberOfAdults
+  if (d.numberOfKids        !== undefined) updateData.numberOfKids       = d.numberOfKids
+  if (d.contributionAmount  !== undefined) updateData.contributionAmount = d.contributionAmount
+  if (d.email               !== undefined) updateData.email              = d.email || null
+  if (d.spouseName          !== undefined) updateData.spouseName         = d.spouseName || null
+  if (d.profession          !== undefined) updateData.profession         = d.profession || null
+  if (d.dateOfBirth         !== undefined) updateData.dateOfBirth        = d.dateOfBirth ? new Date(d.dateOfBirth) : null
   if (d.marriageAnniversary !== undefined) updateData.marriageAnniversary = d.marriageAnniversary ? new Date(d.marriageAnniversary) : null
 
   const [updated] = await prisma.$transaction([
@@ -84,8 +85,8 @@ export async function PATCH(req: NextRequest, { params }: Params) {
           numberOfAdults:     existing.numberOfAdults,
           numberOfKids:       existing.numberOfKids,
           contributionAmount: existing.contributionAmount.toString(),
-        },
-        changesAfter: updateData,
+        } as Prisma.InputJsonValue,
+        changesAfter: updateData as Prisma.InputJsonValue,
       },
     }),
   ])
@@ -133,8 +134,8 @@ export async function DELETE(req: NextRequest, { params }: Params) {
           numberOfKids:       existing.numberOfKids,
           contributionAmount: existing.contributionAmount.toString(),
           createdAt:          existing.createdAt.toISOString(),
-        },
-        changesAfter: {},
+        } as Prisma.InputJsonValue,
+        changesAfter: {} as Prisma.InputJsonValue,
       },
     }),
   ])
