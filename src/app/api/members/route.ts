@@ -134,6 +134,7 @@ export async function GET(req: NextRequest) {
       numberOfAdults:     m.numberOfAdults,
       numberOfKids:       m.numberOfKids,
       contributionAmount: m.contributionAmount.toString(),
+      paymentStatus:      m.paymentStatus,
       email:              m.email,
       spouseName:         m.spouseName,
       dateOfBirth:        m.dateOfBirth,

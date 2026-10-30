@@ -167,6 +167,7 @@ export default function MemberTable({ refreshKey }: { refreshKey?: number }) {
                 { label: 'Name',         field: 'name' as SortField },
                 { label: 'Class / Batch',field: 'classBatch' as SortField },
                 { label: 'Contribution', field: 'contributionAmount' as SortField },
+                { label: 'Payment',      field: null },
                 { label: 'Adults',       field: 'numberOfAdults' as SortField },
                 { label: 'Registered',   field: 'createdAt' as SortField },
                 { label: 'Action',       field: null },
@@ -195,7 +196,7 @@ export default function MemberTable({ refreshKey }: { refreshKey?: number }) {
               : data?.members.length === 0
               ? (
                   <tr>
-                    <td colSpan={6} className="px-4 py-12 text-center text-gray-400">
+                    <td colSpan={7} className="px-4 py-12 text-center text-gray-400">
                       No members found. Try adjusting your search or filters.
                     </td>
                   </tr>
@@ -208,6 +209,12 @@ export default function MemberTable({ refreshKey }: { refreshKey?: number }) {
                     </td>
                     <td className={`px-4 py-3 font-medium ${Number(m.contributionAmount) > 0 ? 'text-[#155e36]' : 'text-gray-400'}`}>
                       {formatINR(m.contributionAmount)}
+                    </td>
+                    <td className="px-4 py-3">
+                      {m.paymentStatus === 'COMPLETED'
+                        ? <span className="inline-flex items-center gap-1 text-xs font-semibold bg-green-100 text-green-700 rounded-full px-2.5 py-1">✓ Completed</span>
+                        : <span className="inline-flex items-center gap-1 text-xs font-semibold bg-gray-100 text-gray-500 rounded-full px-2.5 py-1">⏳ Pending</span>
+                      }
                     </td>
                     <td className="px-4 py-3 text-gray-600">{m.numberOfAdults}A / {m.numberOfKids}K</td>
                     <td className="px-4 py-3 text-gray-500 text-xs">{formatDate(m.createdAt)}</td>
@@ -247,11 +254,15 @@ export default function MemberTable({ refreshKey }: { refreshKey?: number }) {
                   </div>
                   <Button variant="ghost" size="sm" onClick={() => setSelected(m)}>View</Button>
                 </div>
-                <div className="flex items-center gap-4 text-sm text-gray-600">
+                <div className="flex items-center gap-3 flex-wrap text-sm text-gray-600 mt-1">
                   <span className={`font-medium ${Number(m.contributionAmount) > 0 ? 'text-[#155e36]' : 'text-gray-400'}`}>
                     {formatINR(m.contributionAmount)}
                   </span>
-                  <span>· {m.numberOfAdults} adult{m.numberOfAdults === 1 ? '' : 's'} / {m.numberOfKids} kid{m.numberOfKids === 1 ? '' : 's'}</span>
+                  <span>· {m.numberOfAdults}A / {m.numberOfKids}K</span>
+                  {m.paymentStatus === 'COMPLETED'
+                    ? <span className="text-xs font-semibold bg-green-100 text-green-700 rounded-full px-2 py-0.5">✓ Paid</span>
+                    : <span className="text-xs font-semibold bg-gray-100 text-gray-500 rounded-full px-2 py-0.5">⏳ Pending</span>
+                  }
                 </div>
               </div>
             ))

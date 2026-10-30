@@ -7,22 +7,29 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// ─── Payment Status Enum ──────────────────────────────────────────────────────
+enum PaymentStatus {
+  PENDING
+  COMPLETED
+}
+
 // ─── Member ───────────────────────────────────────────────────────────────────
 model Member {
-  phoneNumber         String    @id
-  name                String   
-  classBatch          String   
-  group               String?  
-  numberOfAdults      Int       @default(1)
-  numberOfKids        Int       @default(0)
-  contributionAmount  Decimal   @default(0)
-  email               String?  
-  spouseName          String?  
-  dateOfBirth         DateTime? @db.Timestamptz
-  marriageAnniversary DateTime? @db.Timestamptz
-  profession          String?  
-  createdAt           DateTime  @default(now()) @db.Timestamptz
-  updatedAt           DateTime  @updatedAt @db.Timestamptz
+  phoneNumber         String        @id
+  name                String
+  classBatch          String
+  group               String?
+  numberOfAdults      Int           @default(1)
+  numberOfKids        Int           @default(0)
+  contributionAmount  Decimal       @default(0)
+  paymentStatus       PaymentStatus @default(PENDING)
+  email               String?
+  spouseName          String?
+  dateOfBirth         DateTime?     @db.Timestamptz
+  marriageAnniversary DateTime?     @db.Timestamptz
+  profession          String?
+  createdAt           DateTime      @default(now()) @db.Timestamptz
+  updatedAt           DateTime      @updatedAt @db.Timestamptz
 
   auditLogs AuditLog[]
 
@@ -36,8 +43,8 @@ model Member {
 model Organizer {
   id           String    @id @default(cuid())
   email        String    @unique
-  name         String   
-  passwordHash String   
+  name         String
+  passwordHash String
   createdAt    DateTime  @default(now()) @db.Timestamptz
   updatedAt    DateTime  @updatedAt @db.Timestamptz
   lastLoginAt  DateTime? @db.Timestamptz
@@ -51,11 +58,11 @@ model Organizer {
 model AuditLog {
   id            String   @id @default(cuid())
   organizerId   String
-  action        String  
-  targetPhone   String  
+  action        String
+  targetPhone   String
   changesBefore Json?
   changesAfter  Json?
-  ipAddress     String? 
+  ipAddress     String?
   createdAt     DateTime @default(now()) @db.Timestamptz
 
   organizer Organizer @relation(fields: [organizerId], references: [id])

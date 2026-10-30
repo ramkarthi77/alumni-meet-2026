@@ -24,6 +24,7 @@ export async function GET(_req: NextRequest, { params }: Params) {
     numberOfAdults:      member.numberOfAdults,
     numberOfKids:        member.numberOfKids,
     contributionAmount:  member.contributionAmount.toString(),
+    paymentStatus:       member.paymentStatus,
     email:               member.email,
     spouseName:          member.spouseName,
     dateOfBirth:         member.dateOfBirth,
@@ -65,6 +66,7 @@ export async function PATCH(req: NextRequest, { params }: Params) {
   if (d.numberOfAdults      !== undefined) updateData.numberOfAdults     = d.numberOfAdults
   if (d.numberOfKids        !== undefined) updateData.numberOfKids       = d.numberOfKids
   if (d.contributionAmount  !== undefined) updateData.contributionAmount = d.contributionAmount
+  if (d.paymentStatus       !== undefined) updateData.paymentStatus      = d.paymentStatus
   if (d.email               !== undefined) updateData.email              = d.email || null
   if (d.spouseName          !== undefined) updateData.spouseName         = d.spouseName || null
   if (d.profession          !== undefined) updateData.profession         = d.profession || null
@@ -99,6 +101,7 @@ export async function PATCH(req: NextRequest, { params }: Params) {
     numberOfAdults:      updated.numberOfAdults,
     numberOfKids:        updated.numberOfKids,
     contributionAmount:  updated.contributionAmount.toString(),
+    paymentStatus:       updated.paymentStatus,
     email:               updated.email,
     spouseName:          updated.spouseName,
     dateOfBirth:         updated.dateOfBirth,

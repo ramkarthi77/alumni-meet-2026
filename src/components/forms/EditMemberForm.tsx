@@ -21,6 +21,7 @@ export default function EditMemberForm({ member, onSuccess, onCancel }: EditMemb
     numberOfAdults:    String(member.numberOfAdults),
     numberOfKids:      String(member.numberOfKids),
     contributionAmount: String(member.contributionAmount),
+    paymentStatus:     member.paymentStatus as 'PENDING' | 'COMPLETED',
   })
   const [errors, setErrors]   = useState<Record<string, string>>({})
   const [confirm, setConfirm] = useState(false)
@@ -63,6 +64,7 @@ export default function EditMemberForm({ member, onSuccess, onCancel }: EditMemb
           numberOfAdults:    parseInt(form.numberOfAdults),
           numberOfKids:      parseInt(form.numberOfKids) || 0,
           contributionAmount: parseFloat(form.contributionAmount) || 0,
+          paymentStatus:     form.paymentStatus,
         }),
       })
       const data = await res.json()
@@ -128,6 +130,19 @@ export default function EditMemberForm({ member, onSuccess, onCancel }: EditMemb
             />
           </div>
           {errors.contributionAmount && <p className="text-xs text-red-600">{errors.contributionAmount}</p>}
+        </div>
+
+        {/* Payment Status — admin only */}
+        <div className="flex flex-col gap-1">
+          <label className="text-sm font-medium text-gray-700">Payment Status</label>
+          <select
+            value={form.paymentStatus}
+            onChange={set('paymentStatus')}
+            className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#c9a84c]"
+          >
+            <option value="PENDING">⏳ Pending</option>
+            <option value="COMPLETED">✓ Completed</option>
+          </select>
         </div>
 
         {apiError && (

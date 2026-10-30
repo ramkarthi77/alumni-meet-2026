@@ -55,7 +55,8 @@ export async function GET(req: NextRequest) {
 
   const header = buildRow([
     'Name', 'Phone Number', 'Class / Batch',
-    'Number of Adults', 'Number of Kids', 'Contribution Amount (INR)', 'Registration Date',
+    'Number of Adults', 'Number of Kids', 'Contribution Amount (INR)',
+    'Payment Status', 'Registration Date',
   ])
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -67,6 +68,7 @@ export async function GET(req: NextRequest) {
       m.numberOfAdults,
       m.numberOfKids,
       m.contributionAmount.toNumber(),
+      m.paymentStatus,
       m.createdAt.toISOString(),
     ])
   )

@@ -6,8 +6,12 @@ export const CLASS_BATCH_OPTIONS = [
   '8th Standard',
   '9th Standard',
   '10th Standard',
-  '11th Standard',
-  '12th Standard',
+  '11th Science',
+  '11th Commerce',
+  '11th Arts',
+  '12th Science',
+  '12th Commerce',
+  '12th Arts',
   'Other',
 ] as const
 
@@ -54,6 +58,7 @@ export const updateMemberSchema = z.object({
   numberOfAdults:     z.number().int().min(1).max(20).optional(),
   numberOfKids:       z.number().int().min(0).max(20).optional(),
   contributionAmount: z.number().min(0).max(1_000_000).optional(),
+  paymentStatus:      z.enum(['PENDING', 'COMPLETED']).optional(),
   email:              optEmail.optional(),
   spouseName:         optStr(200).optional(),
   dateOfBirth:        optStr(30).optional(),

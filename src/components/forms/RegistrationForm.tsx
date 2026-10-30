@@ -228,6 +228,24 @@ export default function RegistrationForm() {
         <p className="text-xs text-gray-400 mt-1">பங்களிக்கவில்லை என்றால் 0 · Enter 0 if not contributing</p>
       </div>
 
+      {/* Payment Status — read-only, always Pending */}
+      <div>
+        <Label en="Payment Status" ta="கட்டண நிலை" />
+        <div className="relative">
+          <select
+            disabled
+            value="PENDING"
+            className="w-full rounded-xl border border-gray-200 px-3 py-3 text-sm bg-gray-50 text-gray-400 cursor-not-allowed appearance-none"
+          >
+            <option value="PENDING">⏳ Pending</option>
+          </select>
+          <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-gray-400 pointer-events-none">
+            🔒
+          </span>
+        </div>
+        <p className="text-xs text-gray-400 mt-1">நிர்வாகி மட்டும் மாற்றலாம் · Updated by organizer only</p>
+      </div>
+
       {/* Divider */}
       <div className="flex items-center gap-3">
         <div className="flex-1 h-px bg-gray-200" />

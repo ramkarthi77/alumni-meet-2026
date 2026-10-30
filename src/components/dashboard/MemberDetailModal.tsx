@@ -99,6 +99,11 @@ export default function MemberDetailModal({
               } />
               <Row label="Adults" value={<span>{member.numberOfAdults} adult{member.numberOfAdults === 1 ? '' : 's'}</span>} />
               <Row label="Kids"   value={<span>{member.numberOfKids} kid{member.numberOfKids === 1 ? '' : 's'}</span>} />
+              <Row label="Payment Status" value={
+                member.paymentStatus === 'COMPLETED'
+                  ? <span className="inline-flex items-center gap-1 text-xs font-semibold bg-green-100 text-green-700 rounded-full px-2.5 py-1">✓ Completed</span>
+                  : <span className="inline-flex items-center gap-1 text-xs font-semibold bg-gray-100 text-gray-500 rounded-full px-2.5 py-1">⏳ Pending</span>
+              } />
               <Row label="Contribution" value={
                 <span className={`font-semibold ${Number(member.contributionAmount) > 0 ? 'text-[#155e36]' : 'text-gray-400'}`}>
                   {formatINR(member.contributionAmount)}

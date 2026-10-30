@@ -7,6 +7,7 @@ export interface Member {
   numberOfAdults: number
   numberOfKids: number
   contributionAmount: string
+  paymentStatus: 'PENDING' | 'COMPLETED'
   email?: string | null
   spouseName?: string | null
   dateOfBirth?: string | null
