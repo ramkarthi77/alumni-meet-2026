@@ -6,7 +6,8 @@ describe('registerSchema', () => {
     name: 'Arun Kumar',
     phoneNumber: '+919876543210',
     classBatch: '10th A',
-    numberOfPeople: 2,
+    numberOfAdults: 2,
+    numberOfKids: 0,
     contributionAmount: 1000,
   }
 
@@ -35,13 +36,13 @@ describe('registerSchema', () => {
     expect(r.success).toBe(false)
   })
 
-  it('rejects zero people', () => {
-    const r = registerSchema.safeParse({ ...valid, numberOfPeople: 0 })
+  it('rejects zero adults', () => {
+    const r = registerSchema.safeParse({ ...valid, numberOfAdults: 0 })
     expect(r.success).toBe(false)
   })
 
-  it('rejects more than 20 people', () => {
-    const r = registerSchema.safeParse({ ...valid, numberOfPeople: 21 })
+  it('rejects more than 20 adults', () => {
+    const r = registerSchema.safeParse({ ...valid, numberOfAdults: 21 })
     expect(r.success).toBe(false)
   })
 

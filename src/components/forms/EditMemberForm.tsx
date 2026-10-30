@@ -18,7 +18,8 @@ export default function EditMemberForm({ member, onSuccess, onCancel }: EditMemb
   const [form, setForm] = useState({
     name:              member.name,
     classBatch:        member.classBatch,
-    numberOfPeople:    String(member.numberOfPeople),
+    numberOfAdults:    String(member.numberOfAdults),
+    numberOfKids:      String(member.numberOfKids),
     contributionAmount: String(member.contributionAmount),
   })
   const [errors, setErrors]   = useState<Record<string, string>>({})
@@ -38,9 +39,12 @@ export default function EditMemberForm({ member, onSuccess, onCancel }: EditMemb
     const errs: Record<string, string> = {}
     if (!form.name.trim())  errs.name = 'Name is required'
     if (!form.classBatch)   errs.classBatch = 'Class / Batch is required'
-    const np = parseInt(form.numberOfPeople)
-    if (isNaN(np) || np < 1) errs.numberOfPeople = 'Must be at least 1'
-    if (np > 20)              errs.numberOfPeople = 'Maximum 20'
+    const na = parseInt(form.numberOfAdults)
+    if (isNaN(na) || na < 1) errs.numberOfAdults = 'Must be at least 1'
+    if (na > 20)              errs.numberOfAdults = 'Maximum 20'
+    const nk = parseInt(form.numberOfKids)
+    if (isNaN(nk) || nk < 0) errs.numberOfKids = 'Must be 0 or more'
+    if (nk > 20)              errs.numberOfKids = 'Maximum 20'
     const ca = parseFloat(form.contributionAmount)
     if (isNaN(ca) || ca < 0) errs.contributionAmount = 'Must be 0 or more'
     return errs
@@ -56,7 +60,8 @@ export default function EditMemberForm({ member, onSuccess, onCancel }: EditMemb
         body: JSON.stringify({
           name:              form.name.trim(),
           classBatch:        form.classBatch,
-          numberOfPeople:    parseInt(form.numberOfPeople),
+          numberOfAdults:    parseInt(form.numberOfAdults),
+          numberOfKids:      parseInt(form.numberOfKids) || 0,
           contributionAmount: parseFloat(form.contributionAmount) || 0,
         }),
       })
@@ -96,12 +101,19 @@ export default function EditMemberForm({ member, onSuccess, onCancel }: EditMemb
           required
         />
         <Input
-          label="Number of People"
+          label="Number of Adults"
           type="number" min={1} max={20}
-          value={form.numberOfPeople}
-          onChange={set('numberOfPeople')}
-          error={errors.numberOfPeople}
+          value={form.numberOfAdults}
+          onChange={set('numberOfAdults')}
+          error={errors.numberOfAdults}
           required
+        />
+        <Input
+          label="Number of Kids"
+          type="number" min={0} max={20}
+          value={form.numberOfKids}
+          onChange={set('numberOfKids')}
+          error={errors.numberOfKids}
         />
         <div className="flex flex-col gap-1">
           <label className="text-sm font-medium text-gray-700">Contribution Amount (₹)</label>

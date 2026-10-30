@@ -15,7 +15,7 @@ interface MembersResponse {
   pages: number
 }
 
-type SortField = 'name' | 'classBatch' | 'contributionAmount' | 'numberOfPeople' | 'createdAt'
+type SortField = 'name' | 'classBatch' | 'contributionAmount' | 'numberOfAdults' | 'createdAt'
 type SortDir   = 'asc' | 'desc'
 
 interface FilterState {
@@ -167,7 +167,7 @@ export default function MemberTable({ refreshKey }: { refreshKey?: number }) {
                 { label: 'Name',         field: 'name' as SortField },
                 { label: 'Class / Batch',field: 'classBatch' as SortField },
                 { label: 'Contribution', field: 'contributionAmount' as SortField },
-                { label: '# People',     field: 'numberOfPeople' as SortField },
+                { label: 'Adults',       field: 'numberOfAdults' as SortField },
                 { label: 'Registered',   field: 'createdAt' as SortField },
                 { label: 'Action',       field: null },
               ].map(col => (
@@ -209,7 +209,7 @@ export default function MemberTable({ refreshKey }: { refreshKey?: number }) {
                     <td className={`px-4 py-3 font-medium ${Number(m.contributionAmount) > 0 ? 'text-[#155e36]' : 'text-gray-400'}`}>
                       {formatINR(m.contributionAmount)}
                     </td>
-                    <td className="px-4 py-3 text-gray-600">{m.numberOfPeople}</td>
+                    <td className="px-4 py-3 text-gray-600">{m.numberOfAdults}A / {m.numberOfKids}K</td>
                     <td className="px-4 py-3 text-gray-500 text-xs">{formatDate(m.createdAt)}</td>
                     <td className="px-4 py-3">
                       <Button variant="ghost" size="sm" onClick={() => setSelected(m)}>
@@ -251,7 +251,7 @@ export default function MemberTable({ refreshKey }: { refreshKey?: number }) {
                   <span className={`font-medium ${Number(m.contributionAmount) > 0 ? 'text-[#155e36]' : 'text-gray-400'}`}>
                     {formatINR(m.contributionAmount)}
                   </span>
-                  <span>· {m.numberOfPeople} {m.numberOfPeople === 1 ? 'person' : 'people'}</span>
+                  <span>· {m.numberOfAdults} adult{m.numberOfAdults === 1 ? '' : 's'} / {m.numberOfKids} kid{m.numberOfKids === 1 ? '' : 's'}</span>
                 </div>
               </div>
             ))
