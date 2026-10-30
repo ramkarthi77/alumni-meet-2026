@@ -178,24 +178,24 @@ export default function RegistrationForm() {
         <p className="text-xs text-gray-400 mt-1">உங்கள் பதிவு ID · Your registration ID</p>
       </div>
 
-      {/* Class/Batch */}
-      <div>
-        <Label en="Class / Batch" ta="வகுப்பு / தொகுதி" required />
-        <select value={form.classBatch} onChange={set('classBatch')} tabIndex={4}
-          className={inputCls(!!errors.classBatch)}>
-          <option value="">— தேர்வு செய்க / Select —</option>
-          {CLASS_BATCH_OPTIONS.map(o => <option key={o} value={o}>{o}</option>)}
-        </select>
-        {errors.classBatch && <p className="text-xs text-red-600 mt-1">{errors.classBatch}</p>}
-      </div>
-
-      {/* Group */}
-      <div>
-        <Label en="Group" ta="குழு (அடுத்த வகுப்பு)" />
-        <select value={form.group} onChange={set('group')} tabIndex={5} className={inputCls()}>
-          <option value="">— குழு / Group —</option>
-          {GROUP_OPTIONS.map(g => <option key={g} value={g}>{g}</option>)}
-        </select>
+      {/* Class/Batch + Group — same row */}
+      <div className="grid grid-cols-2 gap-3">
+        <div>
+          <Label en="Class / Batch" ta="வகுப்பு / தொகுதி" required />
+          <select value={form.classBatch} onChange={set('classBatch')} tabIndex={4}
+            className={inputCls(!!errors.classBatch)}>
+            <option value="">— Select —</option>
+            {CLASS_BATCH_OPTIONS.map(o => <option key={o} value={o}>{o}</option>)}
+          </select>
+          {errors.classBatch && <p className="text-xs text-red-600 mt-1">{errors.classBatch}</p>}
+        </div>
+        <div>
+          <Label en="Group" ta="குழு" />
+          <select value={form.group} onChange={set('group')} tabIndex={5} className={inputCls()}>
+            <option value="">— Group —</option>
+            {GROUP_OPTIONS.map(g => <option key={g} value={g}>{g}</option>)}
+          </select>
+        </div>
       </div>
 
       {/* Adults + Kids — 2 col on all screens, simple labels */}
@@ -214,36 +214,38 @@ export default function RegistrationForm() {
         </div>
       </div>
 
-      {/* Contribution */}
-      <div>
-        <Label en="Contribution (₹)" ta="பங்களிப்பு தொகை" required />
-        <div className="relative">
-          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 font-semibold">₹</span>
-          <input type="number" min={0} step={1}
-            value={form.contributionAmount}
-            onChange={e => setForm(p => ({ ...p, contributionAmount: String(Math.max(0, parseInt(e.target.value) || 0)) }))}
-            tabIndex={8}
-            className="w-full rounded-xl border border-gray-300 pl-8 pr-3 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#c9a84c] bg-white" />
+      {/* Contribution + Payment Status — same row */}
+      <div className="grid grid-cols-2 gap-3">
+        <div>
+          <Label en="Contribution (₹)" ta="பங்களிப்பு தொகை" required />
+          <div className="relative">
+            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 font-semibold">₹</span>
+            <input type="number" min={0} step={1}
+              value={form.contributionAmount}
+              onChange={e => setForm(p => ({ ...p, contributionAmount: String(Math.max(0, parseInt(e.target.value) || 0)) }))}
+              tabIndex={8}
+              className="w-full rounded-xl border border-gray-300 pl-8 pr-3 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#c9a84c] bg-white" />
+          </div>
+          <p className="text-xs text-gray-400 mt-1">0 if not contributing</p>
         </div>
-        <p className="text-xs text-gray-400 mt-1">பங்களிக்கவில்லை என்றால் 0 · Enter 0 if not contributing</p>
-      </div>
 
-      {/* Payment Status — read-only, always Pending */}
-      <div>
-        <Label en="Payment Status" ta="கட்டண நிலை" />
-        <div className="relative">
-          <select
-            disabled
-            value="PENDING"
-            className="w-full rounded-xl border border-gray-200 px-3 py-3 text-sm bg-gray-50 text-gray-400 cursor-not-allowed appearance-none"
-          >
-            <option value="PENDING">⏳ Pending</option>
-          </select>
-          <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-gray-400 pointer-events-none">
-            🔒
-          </span>
+        {/* Payment Status — read-only, always Pending */}
+        <div>
+          <Label en="Payment Status" ta="கட்டண நிலை" />
+          <div className="relative">
+            <select
+              disabled
+              value="PENDING"
+              className="w-full rounded-xl border border-gray-200 px-3 py-3 text-sm bg-gray-50 text-gray-400 cursor-not-allowed appearance-none"
+            >
+              <option value="PENDING">⏳ Pending</option>
+            </select>
+            <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-gray-400 pointer-events-none">
+              🔒
+            </span>
+          </div>
+          <p className="text-xs text-gray-400 mt-1">Organizer only</p>
         </div>
-        <p className="text-xs text-gray-400 mt-1">நிர்வாகி மட்டும் மாற்றலாம் · Updated by organizer only</p>
       </div>
 
       {/* Divider */}
