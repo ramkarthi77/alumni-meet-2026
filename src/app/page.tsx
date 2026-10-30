@@ -68,6 +68,22 @@ export default function HomePage() {
         </div>
       </header>
 
+      {/* ── School Photo ── */}
+      <div className="max-w-lg mx-auto px-4 mb-6">
+        <div className="rounded-2xl overflow-hidden border-2 border-[#c9a84c]/40 shadow-xl">
+          <img
+            src="/school.png"
+            alt="DVC Higher Secondary School, Srimushnam"
+            className="w-full h-48 sm:h-64 object-cover object-center"
+          />
+          <div className="bg-black/60 text-center py-2">
+            <p className="text-[#c9a84c] text-xs font-medium tracking-wide">
+              க.வி.சே. மேல்நிலைப்பள்ளி · Srimushnam
+            </p>
+          </div>
+        </div>
+      </div>
+
       {/* ── Form card ── */}
       <section className="max-w-lg mx-auto px-4 pb-16">
         <div className="bg-white rounded-3xl shadow-2xl overflow-hidden">
