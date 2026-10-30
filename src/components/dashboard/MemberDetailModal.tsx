@@ -97,9 +97,8 @@ export default function MemberDetailModal({
               <Row label="Class / Batch" value={
                 <Badge color="green">{member.classBatch}</Badge>
               } />
-              <Row label="Number of People" value={
-                <span>{member.numberOfPeople} {member.numberOfPeople === 1 ? 'person' : 'people'}</span>
-              } />
+              <Row label="Adults" value={<span>{member.numberOfAdults} adult{member.numberOfAdults === 1 ? '' : 's'}</span>} />
+              <Row label="Kids"   value={<span>{member.numberOfKids} kid{member.numberOfKids === 1 ? '' : 's'}</span>} />
               <Row label="Contribution" value={
                 <span className={`font-semibold ${Number(member.contributionAmount) > 0 ? 'text-[#155e36]' : 'text-gray-400'}`}>
                   {formatINR(member.contributionAmount)}
