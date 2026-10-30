@@ -3,24 +3,24 @@ generator client {
 }
 
 datasource db {
-  provider = "cockroachdb"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
 // ─── Member ───────────────────────────────────────────────────────────────────
 model Member {
-  phoneNumber         String    @id @db.String(20)
-  name                String    @db.String(200)
-  classBatch          String    @db.String(100)
-  group               String?   @db.String(10)
+  phoneNumber         String    @id
+  name                String   
+  classBatch          String   
+  group               String?  
   numberOfAdults      Int       @default(1)
   numberOfKids        Int       @default(0)
   contributionAmount  Decimal   @default(0)
-  email               String?   @db.String(255)
-  spouseName          String?   @db.String(200)
+  email               String?  
+  spouseName          String?  
   dateOfBirth         DateTime? @db.Timestamptz
   marriageAnniversary DateTime? @db.Timestamptz
-  profession          String?   @db.String(200)
+  profession          String?  
   createdAt           DateTime  @default(now()) @db.Timestamptz
   updatedAt           DateTime  @updatedAt @db.Timestamptz
 
@@ -35,9 +35,9 @@ model Member {
 // ─── Organizer ────────────────────────────────────────────────────────────────
 model Organizer {
   id           String    @id @default(cuid())
-  email        String    @unique @db.String(255)
-  name         String    @db.String(200)
-  passwordHash String    @db.String(255)
+  email        String    @unique
+  name         String   
+  passwordHash String   
   createdAt    DateTime  @default(now()) @db.Timestamptz
   updatedAt    DateTime  @updatedAt @db.Timestamptz
   lastLoginAt  DateTime? @db.Timestamptz
@@ -51,11 +51,11 @@ model Organizer {
 model AuditLog {
   id            String   @id @default(cuid())
   organizerId   String
-  action        String   @db.String(50)
-  targetPhone   String   @db.String(20)
+  action        String  
+  targetPhone   String  
   changesBefore Json?
   changesAfter  Json?
-  ipAddress     String?  @db.String(45)
+  ipAddress     String? 
   createdAt     DateTime @default(now()) @db.Timestamptz
 
   organizer Organizer @relation(fields: [organizerId], references: [id])
