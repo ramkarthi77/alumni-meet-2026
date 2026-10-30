@@ -155,31 +155,25 @@ export default function DashboardPage() {
 
   return (
     <main className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <div className="bg-gradient-to-r from-[#155e36] to-[#1a7a44] px-6 py-4 flex items-center justify-between">
-        <div>
-          <h1 className="text-white font-bold text-lg">Alumni Meet 2026 · Organizer</h1>
-          <p className="text-white/60 text-xs">DVC Higher Secondary School, Srimushnam</p>
+      {/* Header with school photo background */}
+      <div className="relative h-28 sm:h-32 overflow-hidden">
+        <img src="/school.png" alt="DVC Higher Secondary School" className="w-full h-full object-cover object-center" />
+        <div className="absolute inset-0 bg-black/60 flex items-center justify-between px-6">
+          <div>
+            <h1 className="text-white font-bold text-lg">Alumni Meet 2026 · Organizer</h1>
+            <p className="text-white/70 text-xs">DVC Higher Secondary School, Srimushnam</p>
+          </div>
+          <button onClick={async () => {
+              await signOut({ redirect: false })
+              window.location.href = '/organizer/login'
+            }}
+            className="text-white/70 hover:text-white text-sm border border-white/30 rounded-lg px-3 py-1.5">
+            Sign out
+          </button>
         </div>
-        <button onClick={async () => {
-            await signOut({ redirect: false })
-            window.location.href = '/organizer/login'
-          }}
-          className="text-white/70 hover:text-white text-sm border border-white/30 rounded-lg px-3 py-1.5">
-          Sign out
-        </button>
       </div>
 
       <div className="max-w-4xl mx-auto px-4 py-6 space-y-6">
-
-        {/* School Photo Banner */}
-        <div className="rounded-2xl overflow-hidden border border-[#c9a84c]/30 shadow-sm">
-          <img
-            src="/school.png"
-            alt="DVC Higher Secondary School, Srimushnam"
-            className="w-full h-32 sm:h-44 object-cover object-center"
-          />
-        </div>
 
         {/* Stats */}
         {stats && (
