@@ -68,12 +68,13 @@ export default function SuccessPage({ searchParams }: Props) {
             {/* Close button — closes the tab/window */}
             <CloseButton />
 
-            <Link
+            {/* Use <a> not <Link> so browser does a full reload → form resets cleanly */}
+            <a
               href="/"
               className="block text-xs text-gray-400 hover:text-[#155e36] hover:underline"
             >
               ← Register another person
-            </Link>
+            </a>
           </div>
         </div>
       </div>

@@ -120,7 +120,9 @@ export default function RegistrationForm() {
 
   useEffect(() => {
     setHasMic(!!(window as any).SpeechRecognition || !!(window as any).webkitSpeechRecognition)
-  }, [])
+    // Reset form on every fresh page load (handles browser back button from success page)
+    reset()
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   // Countdown timer for resend
   useEffect(() => {
