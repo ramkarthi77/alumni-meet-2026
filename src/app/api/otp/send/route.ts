@@ -38,8 +38,8 @@ async function sendSmsOTP(phone: string, otp: string): Promise<{ ok: boolean; er
     })
     const data = await res.json()
     if (!data.return) {
-      console.error('[Fast2SMS Error]', data)
-      return { ok: false, error: 'SMS delivery failed. Please try again.' }
+      console.error('[Fast2SMS Error]', JSON.stringify(data))
+      return { ok: false, error: `SMS failed: ${JSON.stringify(data)}` }
     }
     return { ok: true }
   } catch (e) {
@@ -85,7 +85,7 @@ export async function POST(req: NextRequest) {
 
     const result = await sendSmsOTP(phoneNumber, otp)
     if (!result.ok) {
-      return NextResponse.json({ error: result.error ?? 'Failed to send OTP.' }, { status: 500 })
+      return NextResponse.json({ error: result.error ?? 'Failed to send OTP.', debug: result.error }, { status: 500 })
     }
 
     const isDev = !process.env.FAST2SMS_API_KEY
