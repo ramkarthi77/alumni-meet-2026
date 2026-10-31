@@ -1,5 +1,6 @@
 'use client'
 import { useState, useRef, useEffect, useCallback } from 'react'
+// useRef kept for MicBtn internal use
 import { useRouter } from 'next/navigation'
 import Button from '@/components/ui/Button'
 import { CLASS_BATCH_OPTIONS, GROUP_OPTIONS } from '@/lib/validation'
@@ -99,66 +100,6 @@ function CloseBtn({ onClick }: { onClick: () => void }) {
   )
 }
 
-// ─── OTP digit input ─────────────────────────────────────────────────────────
-function OtpInput({ value, onChange }: { value: string; onChange: (v: string) => void }) {
-  const ref0 = useRef<HTMLInputElement>(null)
-  const ref1 = useRef<HTMLInputElement>(null)
-  const ref2 = useRef<HTMLInputElement>(null)
-  const ref3 = useRef<HTMLInputElement>(null)
-  const ref4 = useRef<HTMLInputElement>(null)
-  const ref5 = useRef<HTMLInputElement>(null)
-  const refs = [ref0, ref1, ref2, ref3, ref4, ref5]
-
-  const digits = value.padEnd(6, '').split('')
-
-  const handleChange = (i: number, e: React.ChangeEvent<HTMLInputElement>) => {
-    const val = e.target.value.replace(/\D/g, '').slice(-1)
-    const arr = digits.slice()
-    arr[i] = val
-    onChange(arr.join('').slice(0, 6))
-    if (val && i < 5) refs[i + 1].current?.focus()
-  }
-
-  const handleKey = (i: number, e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Backspace') {
-      if (digits[i]) {
-        const arr = digits.slice(); arr[i] = ''
-        onChange(arr.join(''))
-      } else if (i > 0) {
-        const arr = digits.slice(); arr[i - 1] = ''
-        onChange(arr.join(''))
-        refs[i - 1].current?.focus()
-      }
-    }
-  }
-
-  const handlePaste = (e: React.ClipboardEvent) => {
-    const pasted = e.clipboardData.getData('text').replace(/\D/g, '').slice(0, 6)
-    if (pasted) {
-      onChange(pasted)
-      refs[Math.min(pasted.length, 5)].current?.focus()
-    }
-    e.preventDefault()
-  }
-
-  return (
-    <div className="flex gap-2 justify-center">
-      {digits.map((d, i) => (
-        <input key={i} ref={refs[i]}
-          type="text" inputMode="numeric" maxLength={1}
-          value={d}
-          onChange={e => handleChange(i, e)}
-          onKeyDown={e => handleKey(i, e)}
-          onPaste={handlePaste}
-          autoFocus={i === 0}
-          className={`w-11 h-14 text-center text-xl font-bold rounded-xl border-2 outline-none transition-all
-            ${d ? 'border-[#155e36] bg-[#f0fdf4] text-[#155e36]' : 'border-gray-300 bg-white text-gray-800'}
-            focus:border-[#c9a84c] focus:ring-2 focus:ring-[#c9a84c]/30`}
-        />
-      ))}
-    </div>
-  )
-}
 
 // ─── Main Component ──────────────────────────────────────────────────────────
 export default function RegistrationForm() {
@@ -434,12 +375,25 @@ export default function RegistrationForm() {
 
         {/* OTP input */}
         <div>
-          <p className="text-sm font-semibold text-gray-700 text-center mb-3">
-            Enter 6-digit OTP · 6 இலக்க OTP உள்ளிடவும்
-          </p>
-          <OtpInput value={otpValue} onChange={v => { setOtpValue(v); setOtpError('') }} />
+          <label className="block text-sm font-semibold text-gray-700 mb-2">
+            Enter OTP · OTP உள்ளிடவும்
+          </label>
+          <input
+            type="tel"
+            inputMode="numeric"
+            maxLength={6}
+            placeholder="Enter 6-digit OTP"
+            value={otpValue}
+            onChange={e => {
+              const v = e.target.value.replace(/\D/g, '').slice(0, 6)
+              setOtpValue(v)
+              setOtpError('')
+            }}
+            autoFocus
+            className="w-full rounded-xl border-2 border-gray-300 px-4 py-4 text-2xl font-bold tracking-widest text-center focus:outline-none focus:border-[#155e36] focus:ring-2 focus:ring-[#155e36]/20 bg-white"
+          />
           {otpError && (
-            <p className="text-xs text-red-600 mt-2 text-center">{otpError}</p>
+            <p className="text-sm text-red-600 mt-2 text-center">{otpError}</p>
           )}
         </div>
 

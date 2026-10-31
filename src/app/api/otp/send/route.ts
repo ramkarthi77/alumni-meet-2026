@@ -74,7 +74,9 @@ export async function POST(req: NextRequest) {
       )
     }
 
-    const otp       = generateOTP()
+    // TEST MODE: if TEST_OTP is set, use it and skip SMS
+    const otp       = process.env.TEST_OTP ?? generateOTP()
+    const skipSms   = !!process.env.TEST_OTP
     const expiresAt = new Date(Date.now() + 10 * 60 * 1000) // 10 minutes
 
     await prisma.otpVerification.upsert({
@@ -83,16 +85,17 @@ export async function POST(req: NextRequest) {
       update: { otp, expiresAt, verified: false, attempts: 0, createdAt: new Date() },
     })
 
-    const result = await sendSmsOTP(phoneNumber, otp)
-    if (!result.ok) {
-      return NextResponse.json({ error: result.error ?? 'Failed to send OTP.', debug: result.error }, { status: 500 })
+    if (!skipSms) {
+      const result = await sendSmsOTP(phoneNumber, otp)
+      if (!result.ok) {
+        return NextResponse.json({ error: result.error ?? 'Failed to send OTP.', debug: result.error }, { status: 500 })
+      }
     }
 
-    const isDev = !process.env.FAST2SMS_API_KEY
     return NextResponse.json({
       success: true,
-      message: 'OTP sent via SMS',
-      ...(isDev && { devOtp: otp }), // shown on screen in dev mode only
+      message: skipSms ? 'Test mode — use fixed OTP' : 'OTP sent via SMS',
+      ...(skipSms && { devOtp: otp }), // show OTP on screen in test mode
     })
   } catch (err) {
     console.error('[OTP send error]', err)
