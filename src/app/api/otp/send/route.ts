@@ -18,17 +18,23 @@ async function sendSmsOTP(phone: string, otp: string): Promise<{ ok: boolean; er
   // e.g. +919876543210 → 9876543210
   const localNumber = phone.replace(/^\+91/, '').replace(/\D/g, '')
 
-  const url = new URL('https://www.fast2sms.com/dev/bulkV2')
-  url.searchParams.set('authorization', apiKey)
-  url.searchParams.set('route', 'otp')
-  url.searchParams.set('variables_values', otp)
-  url.searchParams.set('flash', '0')
-  url.searchParams.set('numbers', localNumber)
+  const message = `Your DVC Alumni Meet 2026 OTP is ${otp}. Valid for 10 minutes. Do not share.`
 
   try {
-    const res = await fetch(url.toString(), {
-      method: 'GET',
-      headers: { 'cache-control': 'no-cache' },
+    const res = await fetch('https://www.fast2sms.com/dev/bulkV2', {
+      method: 'POST',
+      headers: {
+        'authorization': apiKey,
+        'Content-Type': 'application/json',
+        'cache-control': 'no-cache',
+      },
+      body: JSON.stringify({
+        route: 'q',          // Quick SMS — no DLT template needed
+        message,
+        language: 'english',
+        flash: 0,
+        numbers: localNumber,
+      }),
     })
     const data = await res.json()
     if (!data.return) {
