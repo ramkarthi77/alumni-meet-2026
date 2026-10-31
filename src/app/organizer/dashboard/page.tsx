@@ -11,6 +11,7 @@ interface Member {
   numberOfAdults: number
   numberOfKids: number
   contributionAmount: string
+  paymentStatus?: 'PENDING' | 'COMPLETED'
   email?: string | null
   spouseName?: string | null
   dateOfBirth?: string | null
@@ -103,6 +104,7 @@ export default function DashboardPage() {
       numberOfAdults: m.numberOfAdults,
       numberOfKids: m.numberOfKids,
       contributionAmount: m.contributionAmount,
+      paymentStatus: m.paymentStatus ?? 'PENDING',
       email: m.email ?? '',
       spouseName: m.spouseName ?? '',
       dateOfBirth: toDateInput(m.dateOfBirth),
@@ -126,6 +128,7 @@ export default function DashboardPage() {
           numberOfAdults: Number(form.numberOfAdults),
           numberOfKids: Number(form.numberOfKids),
           contributionAmount: Number(form.contributionAmount),
+          paymentStatus: (form as Member).paymentStatus ?? 'PENDING',
           email: form.email || null,
           spouseName: form.spouseName || null,
           dateOfBirth: form.dateOfBirth || null,
@@ -228,12 +231,13 @@ export default function DashboardPage() {
 
             {/* Table header */}
             {members.length > 0 && (
-              <div className="hidden md:grid grid-cols-[2fr_1fr_1fr_1fr_1fr_80px] gap-3 px-4 py-2 bg-gray-50 border-b border-gray-100 text-xs font-semibold text-gray-500 uppercase tracking-wider">
+              <div className="hidden md:grid grid-cols-[2fr_1fr_1fr_1fr_1fr_1fr_80px] gap-3 px-4 py-2 bg-gray-50 border-b border-gray-100 text-xs font-semibold text-gray-500 uppercase tracking-wider">
                 <span>Name / Phone</span>
                 <span>Class · Group</span>
                 <span className="text-center">Adults</span>
                 <span className="text-center">Kids</span>
                 <span className="text-right">Amount</span>
+                <span className="text-center">Payment</span>
                 <span className="text-center">Edit</span>
               </div>
             )}
@@ -247,7 +251,7 @@ export default function DashboardPage() {
               <div className="divide-y divide-gray-50">
                 {members.map((m, i) => (
                   <div key={m.phoneNumber}
-                    className={`grid grid-cols-[1fr_auto] md:grid-cols-[2fr_1fr_1fr_1fr_1fr_80px] gap-3 px-4 py-3 items-center hover:bg-[#f8fdf9] transition-colors
+                    className={`grid grid-cols-[1fr_auto] md:grid-cols-[2fr_1fr_1fr_1fr_1fr_1fr_80px] gap-3 px-4 py-3 items-center hover:bg-[#f8fdf9] transition-colors
                       ${i % 2 === 0 ? '' : 'bg-gray-50/50'}`}>
                     {/* Name + phone */}
                     <div>
@@ -270,6 +274,13 @@ export default function DashboardPage() {
                     {/* Amount */}
                     <div className="hidden md:block text-right">
                       <span className="text-sm font-bold text-[#155e36]">₹{Number(m.contributionAmount).toLocaleString('en-IN')}</span>
+                    </div>
+                    {/* Payment Status */}
+                    <div className="hidden md:flex justify-center">
+                      {m.paymentStatus === 'COMPLETED'
+                        ? <span className="text-xs font-semibold bg-green-100 text-green-700 rounded-full px-2 py-0.5">✓ Paid</span>
+                        : <span className="text-xs font-semibold bg-gray-100 text-gray-500 rounded-full px-2 py-0.5">⏳ Pending</span>
+                      }
                     </div>
                     {/* Mobile: amount + edit button */}
                     <div className="flex items-center gap-2 md:hidden">
@@ -350,12 +361,21 @@ export default function DashboardPage() {
               </div>
             </div>
 
-            <div className="flex flex-col gap-1">
-              <label className="text-xs font-semibold text-gray-600">Contribution Amount (₹)</label>
-              <div className="relative">
-                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm">₹</span>
-                <input type="number" min={0} value={form.contributionAmount ?? 0} onChange={set('contributionAmount')}
-                  className="w-full rounded-lg border border-gray-300 pl-7 pr-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#c9a84c]" />
+            <div className="grid grid-cols-2 gap-3">
+              <div className="flex flex-col gap-1">
+                <label className="text-xs font-semibold text-gray-600">Contribution Amount (₹)</label>
+                <div className="relative">
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm">₹</span>
+                  <input type="number" min={0} value={form.contributionAmount ?? 0} onChange={set('contributionAmount')}
+                    className="w-full rounded-lg border border-gray-300 pl-7 pr-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#c9a84c]" />
+                </div>
+              </div>
+              <div className="flex flex-col gap-1">
+                <label className="text-xs font-semibold text-gray-600">Payment Status</label>
+                <select value={(form as Member).paymentStatus ?? 'PENDING'} onChange={set('paymentStatus')} className={inp()}>
+                  <option value="PENDING">⏳ Pending</option>
+                  <option value="COMPLETED">✓ Completed</option>
+                </select>
               </div>
             </div>
 
