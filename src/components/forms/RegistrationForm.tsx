@@ -101,30 +101,43 @@ function CloseBtn({ onClick }: { onClick: () => void }) {
 
 // ─── OTP digit input ─────────────────────────────────────────────────────────
 function OtpInput({ value, onChange }: { value: string; onChange: (v: string) => void }) {
-  const refs = Array.from({ length: 6 }, () => useRef<HTMLInputElement>(null))
+  const ref0 = useRef<HTMLInputElement>(null)
+  const ref1 = useRef<HTMLInputElement>(null)
+  const ref2 = useRef<HTMLInputElement>(null)
+  const ref3 = useRef<HTMLInputElement>(null)
+  const ref4 = useRef<HTMLInputElement>(null)
+  const ref5 = useRef<HTMLInputElement>(null)
+  const refs = [ref0, ref1, ref2, ref3, ref4, ref5]
+
   const digits = value.padEnd(6, '').split('')
+
+  const handleChange = (i: number, e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = e.target.value.replace(/\D/g, '').slice(-1)
+    const arr = digits.slice()
+    arr[i] = val
+    onChange(arr.join('').slice(0, 6))
+    if (val && i < 5) refs[i + 1].current?.focus()
+  }
 
   const handleKey = (i: number, e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Backspace') {
       if (digits[i]) {
-        const next = digits.map((d, idx) => idx === i ? '' : d).join('').trim()
-        onChange(next)
+        const arr = digits.slice(); arr[i] = ''
+        onChange(arr.join(''))
       } else if (i > 0) {
+        const arr = digits.slice(); arr[i - 1] = ''
+        onChange(arr.join(''))
         refs[i - 1].current?.focus()
-        const next = digits.map((d, idx) => idx === i - 1 ? '' : d).join('').trim()
-        onChange(next)
       }
-      return
     }
-    if (!/^\d$/.test(e.key)) return
-    const next = digits.map((d, idx) => idx === i ? e.key : d).join('')
-    onChange(next.slice(0, 6))
-    if (i < 5) refs[i + 1].current?.focus()
   }
 
   const handlePaste = (e: React.ClipboardEvent) => {
     const pasted = e.clipboardData.getData('text').replace(/\D/g, '').slice(0, 6)
-    if (pasted) { onChange(pasted); refs[Math.min(pasted.length, 5)].current?.focus() }
+    if (pasted) {
+      onChange(pasted)
+      refs[Math.min(pasted.length, 5)].current?.focus()
+    }
     e.preventDefault()
   }
 
@@ -133,10 +146,11 @@ function OtpInput({ value, onChange }: { value: string; onChange: (v: string) =>
       {digits.map((d, i) => (
         <input key={i} ref={refs[i]}
           type="text" inputMode="numeric" maxLength={1}
-          value={d} readOnly
+          value={d}
+          onChange={e => handleChange(i, e)}
           onKeyDown={e => handleKey(i, e)}
           onPaste={handlePaste}
-          onClick={() => refs[i].current?.focus()}
+          autoFocus={i === 0}
           className={`w-11 h-14 text-center text-xl font-bold rounded-xl border-2 outline-none transition-all
             ${d ? 'border-[#155e36] bg-[#f0fdf4] text-[#155e36]' : 'border-gray-300 bg-white text-gray-800'}
             focus:border-[#c9a84c] focus:ring-2 focus:ring-[#c9a84c]/30`}
