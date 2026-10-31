@@ -54,6 +54,18 @@ model Organizer {
   @@map("organizers")
 }
 
+// ─── OTP Verification ─────────────────────────────────────────────────────────
+model OtpVerification {
+  phoneNumber String   @id
+  otp         String
+  expiresAt   DateTime @db.Timestamptz
+  verified    Boolean  @default(false)
+  attempts    Int      @default(0)
+  createdAt   DateTime @default(now()) @db.Timestamptz
+
+  @@map("otp_verifications")
+}
+
 // ─── Audit Log ────────────────────────────────────────────────────────────────
 model AuditLog {
   id            String   @id @default(cuid())
