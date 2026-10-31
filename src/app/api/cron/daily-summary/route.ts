@@ -38,7 +38,7 @@ export async function GET(req: NextRequest) {
 
     const totalAdults = members.reduce((s, m) => s + m.numberOfAdults, 0)
     const totalKids = members.reduce((s, m) => s + m.numberOfKids, 0)
-    const totalAmount = members.reduce((s, m) => s + parseFloat(m.contributionAmount ?? '0'), 0)
+    const totalAmount = members.reduce((s, m) => s + parseFloat(m.contributionAmount.toString()), 0)
     const paidCount = members.filter(m => m.paymentStatus === 'COMPLETED').length
     const pendingCount = members.filter(m => m.paymentStatus !== 'COMPLETED').length
 
