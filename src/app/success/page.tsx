@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { formatINR } from '@/lib/format'
+import CloseButton from './CloseButton'
 
 interface Props {
   searchParams: { name?: string; batch?: string; people?: string; amount?: string }
@@ -63,9 +64,13 @@ export default function SuccessPage({ searchParams }: Props) {
             <p className="text-xs text-gray-400">
               Please save a screenshot of this confirmation for your records.
             </p>
+
+            {/* Close button — closes the tab/window */}
+            <CloseButton />
+
             <Link
               href="/"
-              className="inline-flex items-center text-sm text-[#155e36] hover:underline font-medium"
+              className="block text-xs text-gray-400 hover:text-[#155e36] hover:underline"
             >
               ← Register another person
             </Link>
