@@ -64,12 +64,21 @@ export default function DashboardPage() {
   const [saving, setSaving] = useState(false)
   const [msg, setMsg] = useState<{ type: 'ok' | 'err'; text: string } | null>(null)
   const [tab, setTab] = useState<'list' | 'edit'>('list')
+  const [smsBalance, setSmsBalance] = useState<{ balance: number | null; low: boolean } | null>(null)
 
   // Load stats
   useEffect(() => {
     fetch('/api/dashboard/stats')
       .then(r => r.json())
       .then(setStats)
+      .catch(() => {})
+  }, [])
+
+  // Load SMS balance for low-balance warning
+  useEffect(() => {
+    fetch('/api/dashboard/sms-balance')
+      .then(r => r.json())
+      .then(setSmsBalance)
       .catch(() => {})
   }, [])
 
@@ -177,6 +186,21 @@ export default function DashboardPage() {
       </div>
 
       <div className="max-w-4xl mx-auto px-4 py-6 space-y-6">
+
+        {/* ⚠️ SMS Balance Warning */}
+        {smsBalance?.low && (
+          <div className="flex items-start gap-3 bg-amber-50 border border-amber-300 rounded-xl px-4 py-3">
+            <span className="text-xl mt-0.5">⚠️</span>
+            <div>
+              <p className="font-semibold text-amber-800 text-sm">Low SMS Balance — ₹{smsBalance.balance?.toFixed(2)}</p>
+              <p className="text-amber-700 text-xs mt-0.5">
+                Members cannot register if balance hits ₹0. Please recharge at{' '}
+                <a href="https://www.fast2sms.com" target="_blank" rel="noreferrer"
+                  className="underline font-medium">fast2sms.com</a>.
+              </p>
+            </div>
+          </div>
+        )}
 
         {/* Stats */}
         {stats && (

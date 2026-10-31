@@ -4,6 +4,7 @@ import { registerSchema, memberQuerySchema } from '@/lib/validation'
 import { requireAuth } from '@/lib/auth/session'
 import { rateLimit, getClientIP } from '@/lib/rateLimit'
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library'
+import { sendFailedRegistrationAlert } from '@/lib/email'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type MemberWhere = any
@@ -35,6 +36,15 @@ export async function POST(req: NextRequest) {
   }
 
   const phoneNumber = String(parsed.data.phoneNumber).trim()
+
+  // ── Guard: phone must have passed OTP verification ────────────────────────
+  const otpRecord = await prisma.otpVerification.findUnique({ where: { phoneNumber } })
+  if (!otpRecord?.verified) {
+    return NextResponse.json(
+      { error: 'Phone number not verified. Please complete OTP verification first.' },
+      { status: 403 }
+    )
+  }
 
   try {
     const member = await prisma.member.create({
@@ -75,6 +85,12 @@ export async function POST(req: NextRequest) {
       )
     }
     console.error('[POST /api/members]', e)
+    // Send alert email to organizer (non-blocking)
+    sendFailedRegistrationAlert({
+      name: parsed.data.name,
+      phone: phoneNumber,
+      error: e instanceof Error ? e.message : String(e),
+    }).catch(() => {})
     return NextResponse.json({ error: 'Registration failed. Please try again.' }, { status: 500 })
   }
 }
