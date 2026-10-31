@@ -18,6 +18,8 @@ async function sendSmsOTP(phone: string, otp: string): Promise<{ ok: boolean; er
   // e.g. +919876543210 → 9876543210
   const localNumber = phone.replace(/^\+91/, '').replace(/\D/g, '')
 
+  const message = `Your DVC Alumni Meet 2026 OTP is ${otp}. Valid for 10 minutes. Do not share.`
+
   try {
     const res = await fetch('https://www.fast2sms.com/dev/bulkV2', {
       method: 'POST',
@@ -27,8 +29,9 @@ async function sendSmsOTP(phone: string, otp: string): Promise<{ ok: boolean; er
         'cache-control': 'no-cache',
       },
       body: JSON.stringify({
-        route: 'otp',        // OTP route — ₹0.25/SMS (vs ₹7 for Quick SMS)
-        variables_values: otp,
+        route: 'q',          // Quick SMS — works reliably, no template setup needed
+        message,
+        language: 'english',
         flash: 0,
         numbers: localNumber,
       }),
