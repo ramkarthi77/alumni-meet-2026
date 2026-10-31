@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import './globals.css'
 import Providers from '@/components/layout/Providers'
+import { Analytics } from "@vercel/analytics/next"
 
 export const metadata: Metadata = {
   title:       'Alumni Meet 2026',
