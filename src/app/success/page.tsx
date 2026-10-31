@@ -3,11 +3,11 @@ import { formatINR } from '@/lib/format'
 import CloseButton from './CloseButton'
 
 interface Props {
-  searchParams: { name?: string; batch?: string; people?: string; amount?: string }
+  searchParams: Promise<{ name?: string; batch?: string; people?: string; amount?: string }>
 }
 
-export default function SuccessPage({ searchParams }: Props) {
-  const { name, batch, people, amount } = searchParams
+export default async function SuccessPage({ searchParams }: Props) {
+  const { name, batch, people, amount } = await searchParams
 
   if (!name) {
     return (

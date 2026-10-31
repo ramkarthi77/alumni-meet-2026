@@ -319,7 +319,7 @@ export default function RegistrationForm() {
             </select>
             <input type="tel" placeholder={`${country.maxLen} digits`}
               value={form.localPhone} onChange={set('localPhone')}
-              maxLength={country.maxLen + 1} autoFocus
+              maxLength={country.maxLen} autoFocus
               className={inputCls(!!errors.phone)} />
           </div>
           {errors.phone && <p className="text-xs text-red-600 mt-1">{errors.phone}</p>}
@@ -448,7 +448,7 @@ export default function RegistrationForm() {
         <Label en="Full Name" ta="முழு பெயர்" required />
         <div className="relative">
           <input type="text" placeholder="உங்கள் முழு பெயர் / Your full name"
-            value={form.name} onChange={set('name')} maxLength={200}
+            value={form.name} onChange={set('name')} maxLength={75}
             autoComplete="name" tabIndex={1} autoFocus
             className={inputCls(!!errors.name)} />
           {hasMic && <MicBtn onResult={voice('name')} />}
