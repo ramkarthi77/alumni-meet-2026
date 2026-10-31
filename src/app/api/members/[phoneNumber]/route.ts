@@ -4,15 +4,17 @@ import { updateMemberSchema } from '@/lib/validation'
 import { requireAuth } from '@/lib/auth/session'
 import type { Prisma } from '@prisma/client'
 
-type Params = { params: { phoneNumber: string } }
+type Params = { params: Promise<{ phoneNumber: string }> }
 
 // ─── GET /api/members/[phoneNumber] ───────────────────────────────────────────
 export async function GET(_req: NextRequest, { params }: Params) {
   const { session, response } = await requireAuth()
   if (!session) return response!
 
+  const { phoneNumber } = await params
+
   const member = await prisma.member.findUnique({
-    where: { phoneNumber: decodeURIComponent(params.phoneNumber) },
+    where: { phoneNumber: decodeURIComponent(phoneNumber) },
   })
   if (!member) return NextResponse.json({ error: 'Member not found.' }, { status: 404 })
 
@@ -53,7 +55,8 @@ export async function PATCH(req: NextRequest, { params }: Params) {
     )
   }
 
-  const phone = decodeURIComponent(params.phoneNumber)
+  const { phoneNumber } = await params
+  const phone = decodeURIComponent(phoneNumber)
 
   const existing = await prisma.member.findUnique({ where: { phoneNumber: phone } })
   if (!existing) return NextResponse.json({ error: 'Member not found.' }, { status: 404 })
@@ -117,7 +120,8 @@ export async function DELETE(req: NextRequest, { params }: Params) {
   const { session, response } = await requireAuth()
   if (!session) return response!
 
-  const phone = decodeURIComponent(params.phoneNumber)
+  const { phoneNumber } = await params
+  const phone = decodeURIComponent(phoneNumber)
 
   const existing = await prisma.member.findUnique({ where: { phoneNumber: phone } })
   if (!existing) return NextResponse.json({ error: 'Member not found.' }, { status: 404 })
