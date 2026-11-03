@@ -42,13 +42,13 @@ function toDateInput(val?: string | null) {
 
 function StatCard({ icon, label, value, sub, sub2 }: { icon: string; label: string; value: string | number; sub?: string; sub2?: string }) {
   return (
-    <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5 flex items-center gap-4">
-      <div className="w-12 h-12 rounded-xl bg-[#e8f5ee] flex items-center justify-center text-2xl flex-shrink-0">
+    <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-4 flex items-center gap-3">
+      <div className="w-10 h-10 rounded-xl bg-[#e8f5ee] flex items-center justify-center text-xl flex-shrink-0">
         {icon}
       </div>
       <div className="min-w-0">
         <p className="text-xs text-gray-500 font-medium">{label}</p>
-        <p className="text-2xl font-bold text-gray-900 truncate">{value}</p>
+        <p className="text-xl font-bold text-gray-900 truncate">{value}</p>
         {sub && <p className="text-xs text-gray-400 mt-0.5">{sub}</p>}
         {sub2 && <p className="text-xs text-gray-400">{sub2}</p>}
       </div>
@@ -218,13 +218,13 @@ export default function DashboardPage() {
         {stats && (
           <div className="space-y-3">
             {/* Row 1: Members & Attendance */}
-            <div className="grid grid-cols-3 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
               <StatCard icon="👥" label="Registered Members" value={stats.totalMembers} sub="total registered" />
               <StatCard icon="🧑" label="Attending Adults" value={stats.totalAdults} sub="18+ years" />
               <StatCard icon="🧒" label="Attending Kids" value={stats.totalKids} sub="under 12" />
             </div>
             {/* Row 2: Amount breakdown */}
-            <div className="grid grid-cols-3 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
               <StatCard icon="💰" label="Registered Amount" value={`₹${stats.totalAmount.toLocaleString('en-IN')}`} sub="total collected" />
               <div className="bg-white rounded-2xl shadow-sm border border-green-100 p-4 flex items-center gap-3">
                 <div className="w-10 h-10 rounded-xl bg-green-50 flex items-center justify-center text-xl flex-shrink-0">✅</div>
