@@ -217,35 +217,29 @@ export default function DashboardPage() {
         {/* Stats */}
         {stats && (
           <div className="space-y-3">
-            {/* Row 1: Members + People */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+            {/* Row 1: Members & Attendance */}
+            <div className="grid grid-cols-3 gap-3">
               <StatCard icon="👥" label="Registered Members" value={stats.totalMembers} sub="total registered" />
-              <StatCard
-                icon="💰"
-                label="Registered Amount"
-                value={`₹${stats.totalAmount.toLocaleString('en-IN')}`}
-                sub={`✅ Paid: ₹${(stats.paidAmount ?? 0).toLocaleString('en-IN')}`}
-                sub2={`⏳ Pending: ₹${(stats.pendingAmount ?? 0).toLocaleString('en-IN')}`}
-              />
               <StatCard icon="🧑" label="Attending Adults" value={stats.totalAdults} sub="18+ years" />
               <StatCard icon="🧒" label="Attending Kids" value={stats.totalKids} sub="under 12" />
             </div>
-            {/* Row 2: Paid vs Pending breakdown */}
-            <div className="grid grid-cols-2 gap-3">
+            {/* Row 2: Amount breakdown */}
+            <div className="grid grid-cols-3 gap-3">
+              <StatCard icon="💰" label="Registered Amount" value={`₹${stats.totalAmount.toLocaleString('en-IN')}`} sub="total" />
               <div className="bg-white rounded-2xl shadow-sm border border-green-100 p-4 flex items-center gap-3">
                 <div className="w-10 h-10 rounded-xl bg-green-50 flex items-center justify-center text-xl flex-shrink-0">✅</div>
                 <div className="min-w-0">
-                  <p className="text-xs text-gray-500 font-medium">Paid</p>
-                  <p className="text-xl font-bold text-green-700 truncate">₹{(stats.paidAmount ?? 0).toLocaleString('en-IN')}</p>
-                  <p className="text-xs text-gray-400">{stats.paidCount ?? 0} {(stats.paidCount ?? 0) === 1 ? 'member' : 'members'}</p>
+                  <p className="text-xs text-gray-500 font-medium">Paid Amount</p>
+                  <p className="text-lg font-bold text-green-700 truncate">₹{(stats.paidAmount ?? 0).toLocaleString('en-IN')}</p>
+                  <p className="text-xs text-gray-400">{stats.paidCount ?? 0} paid members</p>
                 </div>
               </div>
               <div className="bg-white rounded-2xl shadow-sm border border-amber-100 p-4 flex items-center gap-3">
                 <div className="w-10 h-10 rounded-xl bg-amber-50 flex items-center justify-center text-xl flex-shrink-0">⏳</div>
                 <div className="min-w-0">
-                  <p className="text-xs text-gray-500 font-medium">Pending</p>
-                  <p className="text-xl font-bold text-amber-700 truncate">₹{(stats.pendingAmount ?? 0).toLocaleString('en-IN')}</p>
-                  <p className="text-xs text-gray-400">{stats.pendingCount ?? 0} {(stats.pendingCount ?? 0) === 1 ? 'member' : 'members'}</p>
+                  <p className="text-xs text-gray-500 font-medium">Pending Amount</p>
+                  <p className="text-lg font-bold text-amber-700 truncate">₹{(stats.pendingAmount ?? 0).toLocaleString('en-IN')}</p>
+                  <p className="text-xs text-gray-400">{stats.pendingCount ?? 0} pending members</p>
                 </div>
               </div>
             </div>
