@@ -229,16 +229,16 @@ export default function DashboardPage() {
                 <div className="w-10 h-10 rounded-xl bg-green-50 flex items-center justify-center text-xl flex-shrink-0">✅</div>
                 <div className="min-w-0">
                   <p className="text-xs text-gray-500 font-medium">Paid</p>
-                  <p className="text-xl font-bold text-green-700 truncate">₹{stats.paidAmount.toLocaleString('en-IN')}</p>
-                  <p className="text-xs text-gray-400">{stats.paidCount} {stats.paidCount === 1 ? 'member' : 'members'}</p>
+                  <p className="text-xl font-bold text-green-700 truncate">₹{(stats.paidAmount ?? 0).toLocaleString('en-IN')}</p>
+                  <p className="text-xs text-gray-400">{stats.paidCount ?? 0} {(stats.paidCount ?? 0) === 1 ? 'member' : 'members'}</p>
                 </div>
               </div>
               <div className="bg-white rounded-2xl shadow-sm border border-amber-100 p-4 flex items-center gap-3">
                 <div className="w-10 h-10 rounded-xl bg-amber-50 flex items-center justify-center text-xl flex-shrink-0">⏳</div>
                 <div className="min-w-0">
                   <p className="text-xs text-gray-500 font-medium">Pending</p>
-                  <p className="text-xl font-bold text-amber-700 truncate">₹{stats.pendingAmount.toLocaleString('en-IN')}</p>
-                  <p className="text-xs text-gray-400">{stats.pendingCount} {stats.pendingCount === 1 ? 'member' : 'members'}</p>
+                  <p className="text-xl font-bold text-amber-700 truncate">₹{(stats.pendingAmount ?? 0).toLocaleString('en-IN')}</p>
+                  <p className="text-xs text-gray-400">{stats.pendingCount ?? 0} {(stats.pendingCount ?? 0) === 1 ? 'member' : 'members'}</p>
                 </div>
               </div>
             </div>
