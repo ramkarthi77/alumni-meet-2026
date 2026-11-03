@@ -40,16 +40,17 @@ function toDateInput(val?: string | null) {
   try { return new Date(val).toISOString().split('T')[0] } catch { return '' }
 }
 
-function StatCard({ icon, label, value, sub }: { icon: string; label: string; value: string | number; sub?: string }) {
+function StatCard({ icon, label, value, sub, sub2 }: { icon: string; label: string; value: string | number; sub?: string; sub2?: string }) {
   return (
     <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5 flex items-center gap-4">
       <div className="w-12 h-12 rounded-xl bg-[#e8f5ee] flex items-center justify-center text-2xl flex-shrink-0">
         {icon}
       </div>
-      <div>
+      <div className="min-w-0">
         <p className="text-xs text-gray-500 font-medium">{label}</p>
-        <p className="text-2xl font-bold text-gray-900">{value}</p>
+        <p className="text-2xl font-bold text-gray-900 truncate">{value}</p>
         {sub && <p className="text-xs text-gray-400 mt-0.5">{sub}</p>}
+        {sub2 && <p className="text-xs text-gray-400">{sub2}</p>}
       </div>
     </div>
   )
@@ -218,10 +219,16 @@ export default function DashboardPage() {
           <div className="space-y-3">
             {/* Row 1: Members + People */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-              <StatCard icon="👥" label="Total Members" value={stats.totalMembers} />
-              <StatCard icon="💰" label="Total Collected" value={`₹${stats.totalAmount.toLocaleString('en-IN')}`} sub="all members" />
-              <StatCard icon="🧑" label="Total Adults" value={stats.totalAdults} sub="18+ years" />
-              <StatCard icon="🧒" label="Total Kids" value={stats.totalKids} sub="under 12" />
+              <StatCard icon="👥" label="Registered Members" value={stats.totalMembers} sub="total registered" />
+              <StatCard
+                icon="💰"
+                label="Registered Amount"
+                value={`₹${stats.totalAmount.toLocaleString('en-IN')}`}
+                sub={`✅ Paid: ₹${(stats.paidAmount ?? 0).toLocaleString('en-IN')}`}
+                sub2={`⏳ Pending: ₹${(stats.pendingAmount ?? 0).toLocaleString('en-IN')}`}
+              />
+              <StatCard icon="🧑" label="Attending Adults" value={stats.totalAdults} sub="18+ years" />
+              <StatCard icon="🧒" label="Attending Kids" value={stats.totalKids} sub="under 12" />
             </div>
             {/* Row 2: Paid vs Pending breakdown */}
             <div className="grid grid-cols-2 gap-3">
