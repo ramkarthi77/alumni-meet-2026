@@ -35,7 +35,7 @@ const optEmail = z.union([
 ]).transform(v => v || null)
 
 export const registerSchema = z.object({
-  name:               z.string().min(1, 'Name is required').max(200).transform(s => s.trim()),
+  name:               z.string().min(1, 'Name is required').max(75).transform(s => s.trim()),
   phoneNumber:        z.string().min(5, 'Phone number is required').max(20),
   classBatch:         z.string().min(1, 'Class / Batch is required').max(100).transform(s => s.trim()),
   group:              optStr(10),
@@ -78,6 +78,7 @@ export const memberQuerySchema = z.object({
   maxAmount: z.coerce.number().min(0).optional(),
   sortBy:  z.enum(['name', 'classBatch', 'contributionAmount', 'numberOfAdults', 'createdAt']).default('createdAt'),
   sortDir: z.enum(['asc', 'desc']).default('desc'),
+  paymentStatus: z.enum(['PENDING', 'COMPLETED']).optional(),
 })
 
 export type MemberQuery = z.infer<typeof memberQuerySchema>

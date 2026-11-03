@@ -125,6 +125,9 @@ export async function GET(req: NextRequest) {
   } else if (q.hasContribution === 'no') {
     where.contributionAmount = { equals: 0 }
   }
+  if (q.paymentStatus) {
+    where.paymentStatus = q.paymentStatus
+  }
   if (q.minAmount !== undefined || q.maxAmount !== undefined) {
     where.contributionAmount = {
       ...(where.contributionAmount as object),

@@ -25,6 +25,10 @@ interface Stats {
   totalAmount: number
   totalAdults: number
   totalKids: number
+  paidCount: number
+  paidAmount: number
+  pendingCount: number
+  pendingAmount: number
 }
 
 const inp = (err?: boolean) =>
@@ -65,6 +69,7 @@ export default function DashboardPage() {
   const [msg, setMsg] = useState<{ type: 'ok' | 'err'; text: string } | null>(null)
   const [tab, setTab] = useState<'list' | 'edit'>('list')
   const [smsBalance, setSmsBalance] = useState<{ balance: number | null; low: boolean } | null>(null)
+  const [statusFilter, setStatusFilter] = useState<'' | 'PENDING' | 'COMPLETED'>('')
 
   // Load stats
   useEffect(() => {
@@ -83,11 +88,12 @@ export default function DashboardPage() {
   }, [])
 
   // Load members
-  const loadMembers = useCallback(async (p = 1, q = query) => {
+  const loadMembers = useCallback(async (p = 1, q = query, sf = statusFilter) => {
     setLoading(true)
     try {
       const params = new URLSearchParams({ page: String(p), limit: '50', sortBy: 'createdAt', sortDir: 'desc' })
       if (q.trim()) params.set('search', q.trim())
+      if (sf) params.set('paymentStatus', sf)
       const res = await fetch(`/api/members?${params}`)
       const data = await res.json()
       setMembers(data.members ?? [])
@@ -97,11 +103,16 @@ export default function DashboardPage() {
     } catch {
       setMsg({ type: 'err', text: 'Failed to load members.' })
     } finally { setLoading(false) }
-  }, [query])
+  }, [query, statusFilter])
 
-  useEffect(() => { loadMembers(1, '') }, []) // initial load — all members
+  useEffect(() => { loadMembers(1, '', '') }, []) // initial load — all members
 
-  function search() { loadMembers(1, query) }
+  function search() { loadMembers(1, query, statusFilter) }
+
+  function handleStatusFilter(sf: '' | 'PENDING' | 'COMPLETED') {
+    setStatusFilter(sf)
+    loadMembers(1, query, sf)
+  }
 
   function select(m: Member) {
     setSelected(m)
@@ -204,11 +215,33 @@ export default function DashboardPage() {
 
         {/* Stats */}
         {stats && (
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-            <StatCard icon="👥" label="Total Members" value={stats.totalMembers} />
-            <StatCard icon="💰" label="Total Amount" value={`₹${stats.totalAmount.toLocaleString('en-IN')}`} sub="collected" />
-            <StatCard icon="🧑" label="Total Adults" value={stats.totalAdults} sub="18+ years" />
-            <StatCard icon="🧒" label="Total Kids" value={stats.totalKids} sub="under 12" />
+          <div className="space-y-3">
+            {/* Row 1: Members + People */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+              <StatCard icon="👥" label="Total Members" value={stats.totalMembers} />
+              <StatCard icon="💰" label="Total Collected" value={`₹${stats.totalAmount.toLocaleString('en-IN')}`} sub="all members" />
+              <StatCard icon="🧑" label="Total Adults" value={stats.totalAdults} sub="18+ years" />
+              <StatCard icon="🧒" label="Total Kids" value={stats.totalKids} sub="under 12" />
+            </div>
+            {/* Row 2: Paid vs Pending breakdown */}
+            <div className="grid grid-cols-2 gap-3">
+              <div className="bg-white rounded-2xl shadow-sm border border-green-100 p-4 flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-green-50 flex items-center justify-center text-xl flex-shrink-0">✅</div>
+                <div className="min-w-0">
+                  <p className="text-xs text-gray-500 font-medium">Paid</p>
+                  <p className="text-xl font-bold text-green-700 truncate">₹{stats.paidAmount.toLocaleString('en-IN')}</p>
+                  <p className="text-xs text-gray-400">{stats.paidCount} {stats.paidCount === 1 ? 'member' : 'members'}</p>
+                </div>
+              </div>
+              <div className="bg-white rounded-2xl shadow-sm border border-amber-100 p-4 flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-amber-50 flex items-center justify-center text-xl flex-shrink-0">⏳</div>
+                <div className="min-w-0">
+                  <p className="text-xs text-gray-500 font-medium">Pending</p>
+                  <p className="text-xl font-bold text-amber-700 truncate">₹{stats.pendingAmount.toLocaleString('en-IN')}</p>
+                  <p className="text-xs text-gray-400">{stats.pendingCount} {stats.pendingCount === 1 ? 'member' : 'members'}</p>
+                </div>
+              </div>
+            </div>
           </div>
         )}
 
@@ -232,25 +265,41 @@ export default function DashboardPage() {
         {tab === 'list' && (
           <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
             {/* Search bar */}
-            <div className="p-4 border-b border-gray-100 flex gap-2">
-              <input
-                type="text"
-                placeholder="Search by name or phone number..."
-                value={query}
-                onChange={e => setQuery(e.target.value)}
-                onKeyDown={e => e.key === 'Enter' && search()}
-                className="flex-1 rounded-lg border border-gray-300 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#c9a84c]"
-              />
-              <button onClick={search} disabled={loading}
-                className="bg-[#155e36] hover:bg-[#1a7a44] text-white rounded-lg px-5 py-2.5 text-sm font-medium disabled:opacity-60">
-                {loading ? '…' : 'Search'}
-              </button>
-              {query && (
-                <button onClick={() => { setQuery(''); loadMembers(1, '') }}
-                  className="text-gray-400 hover:text-gray-600 px-3 text-sm border border-gray-200 rounded-lg">
-                  Clear
+            <div className="p-4 border-b border-gray-100 space-y-3">
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  placeholder="Search by name or phone number..."
+                  value={query}
+                  onChange={e => setQuery(e.target.value)}
+                  onKeyDown={e => e.key === 'Enter' && search()}
+                  className="flex-1 rounded-lg border border-gray-300 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#c9a84c]"
+                />
+                <button onClick={search} disabled={loading}
+                  className="bg-[#155e36] hover:bg-[#1a7a44] text-white rounded-lg px-5 py-2.5 text-sm font-medium disabled:opacity-60">
+                  {loading ? '…' : 'Search'}
                 </button>
-              )}
+                {(query || statusFilter) && (
+                  <button onClick={() => { setQuery(''); setStatusFilter(''); loadMembers(1, '', '') }}
+                    className="text-gray-400 hover:text-gray-600 px-3 text-sm border border-gray-200 rounded-lg">
+                    Clear
+                  </button>
+                )}
+              </div>
+              {/* Status filter */}
+              <div className="flex gap-2">
+                {(['', 'COMPLETED', 'PENDING'] as const).map(sf => (
+                  <button key={sf} onClick={() => handleStatusFilter(sf)}
+                    className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition-colors
+                      ${statusFilter === sf
+                        ? sf === 'COMPLETED' ? 'bg-green-600 text-white border-green-600'
+                          : sf === 'PENDING' ? 'bg-amber-500 text-white border-amber-500'
+                          : 'bg-[#155e36] text-white border-[#155e36]'
+                        : 'bg-white text-gray-600 border-gray-200 hover:bg-gray-50'}`}>
+                    {sf === '' ? '👥 All' : sf === 'COMPLETED' ? '✅ Paid' : '⏳ Pending'}
+                  </button>
+                ))}
+              </div>
             </div>
 
             {/* Table header */}
