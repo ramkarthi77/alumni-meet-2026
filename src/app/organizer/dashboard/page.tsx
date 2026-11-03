@@ -225,7 +225,7 @@ export default function DashboardPage() {
             </div>
             {/* Row 2: Amount breakdown */}
             <div className="grid grid-cols-3 gap-3">
-              <StatCard icon="💰" label="Registered Amount" value={`₹${stats.totalAmount.toLocaleString('en-IN')}`} sub="total" />
+              <StatCard icon="💰" label="Registered Amount" value={`₹${stats.totalAmount.toLocaleString('en-IN')}`} sub="total collected" />
               <div className="bg-white rounded-2xl shadow-sm border border-green-100 p-4 flex items-center gap-3">
                 <div className="w-10 h-10 rounded-xl bg-green-50 flex items-center justify-center text-xl flex-shrink-0">✅</div>
                 <div className="min-w-0">
