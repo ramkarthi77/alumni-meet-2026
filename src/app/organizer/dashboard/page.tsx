@@ -247,7 +247,7 @@ export default function DashboardPage() {
         )}
 
         {/* Tabs */}
-        <div className="flex gap-2">
+        <div className="flex gap-2 flex-wrap">
           <button onClick={() => setTab('list')}
             className={`px-5 py-2 rounded-xl text-sm font-medium transition-colors
               ${tab === 'list' ? 'bg-[#155e36] text-white' : 'bg-white text-gray-600 border border-gray-200 hover:bg-gray-50'}`}>
@@ -260,6 +260,10 @@ export default function DashboardPage() {
               ✏️ Edit: {selected.name.split(' ')[0]}
             </button>
           )}
+          <a href="/api/dashboard/export" download
+            className="ml-auto px-5 py-2 rounded-xl text-sm font-medium border border-[#155e36] text-[#155e36] bg-white hover:bg-[#e8f5ee] transition-colors flex items-center gap-1.5">
+            ⬇️ Export CSV
+          </a>
         </div>
 
         {/* Members List Tab */}
