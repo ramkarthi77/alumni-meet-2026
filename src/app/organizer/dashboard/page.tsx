@@ -225,7 +225,7 @@ export default function DashboardPage() {
             </div>
             {/* Row 2: Amount breakdown */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-              <StatCard icon="💰" label="Registered Amount" value={`₹${stats.totalAmount.toLocaleString('en-IN')}`} sub="total collected" />
+              <StatCard icon="💰" label="Registered Amount" value={`₹${stats.totalAmount.toLocaleString('en-IN')}`} sub="total registered" />
               <div className="bg-white rounded-2xl shadow-sm border border-green-100 p-4 flex items-center gap-3">
                 <div className="w-10 h-10 rounded-xl bg-green-50 flex items-center justify-center text-xl flex-shrink-0">✅</div>
                 <div className="min-w-0">
@@ -309,7 +309,8 @@ export default function DashboardPage() {
 
             {/* Table header */}
             {members.length > 0 && (
-              <div className="hidden md:grid grid-cols-[2fr_1fr_1fr_1fr_1fr_1fr_80px] gap-3 px-4 py-2 bg-gray-50 border-b border-gray-100 text-xs font-semibold text-gray-500 uppercase tracking-wider">
+              <div className="hidden md:grid grid-cols-[40px_2fr_1fr_1fr_1fr_1fr_1fr_80px] gap-3 px-4 py-2 bg-gray-50 border-b border-gray-100 text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                <span>#</span>
                 <span>Name / Phone</span>
                 <span>Class · Group</span>
                 <span className="text-center">Adults</span>
@@ -329,8 +330,10 @@ export default function DashboardPage() {
               <div className="divide-y divide-gray-50">
                 {members.map((m, i) => (
                   <div key={m.phoneNumber}
-                    className={`grid grid-cols-[1fr_auto] md:grid-cols-[2fr_1fr_1fr_1fr_1fr_1fr_80px] gap-3 px-4 py-3 items-center hover:bg-[#f8fdf9] transition-colors
+                    className={`grid grid-cols-[1fr_auto] md:grid-cols-[40px_2fr_1fr_1fr_1fr_1fr_1fr_80px] gap-3 px-4 py-3 items-center hover:bg-[#f8fdf9] transition-colors
                       ${i % 2 === 0 ? '' : 'bg-gray-50/50'}`}>
+                    {/* Serial number */}
+                    <div className="hidden md:block text-xs text-gray-400 font-mono">{(page - 1) * 50 + i + 1}</div>
                     {/* Name + phone */}
                     <div>
                       <p className="font-medium text-gray-900 text-sm">{m.name}</p>
