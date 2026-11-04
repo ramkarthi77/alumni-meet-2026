@@ -47,6 +47,6 @@ export const config = {
     '/api/export/:path*',
     // Individual member routes (PATCH, DELETE, GET by phone) — auth in handler too,
     // but middleware adds a second layer for organizer-only paths.
-    '/api/members/:phoneNumber+',
+    '/api/members/((?!check).+)',
   ],
 }

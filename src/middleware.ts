@@ -16,6 +16,12 @@ export default function middleware(req: NextRequest, event: Parameters<typeof au
   const isApiRoute = req.nextUrl.pathname.startsWith('/api/')
 
   if (isApiRoute) {
+    // Public API routes — no auth required
+    const publicApiRoutes = ['/api/members/check']
+    if (publicApiRoutes.some(p => req.nextUrl.pathname.startsWith(p))) {
+      return NextResponse.next()
+    }
+
     // Check for NextAuth session token — if missing, return 401 JSON immediately.
     const token =
       req.cookies.get('next-auth.session-token')?.value ??
@@ -41,6 +47,6 @@ export const config = {
     '/api/export/:path*',
     // Individual member routes (PATCH, DELETE, GET by phone) — auth in handler too,
     // but middleware adds a second layer for organizer-only paths.
-    '/api/members/:phoneNumber+',
+    '/api/members/((?!check).+)',
   ],
 }
