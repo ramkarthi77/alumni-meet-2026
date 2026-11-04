@@ -37,13 +37,16 @@ export async function POST(req: NextRequest) {
 
   const phoneNumber = String(parsed.data.phoneNumber).trim()
 
-  // ── Guard: phone must have passed OTP verification ────────────────────────
-  const otpRecord = await prisma.otpVerification.findUnique({ where: { phoneNumber } })
-  if (!otpRecord?.verified) {
-    return NextResponse.json(
-      { error: 'Phone number not verified. Please complete OTP verification first.' },
-      { status: 403 }
-    )
+  // ── Guard: phone must have passed OTP verification (skipped when REQUIRE_OTP=false) ──
+  const otpRequired = process.env.REQUIRE_OTP !== 'false'
+  if (otpRequired) {
+    const otpRecord = await prisma.otpVerification.findUnique({ where: { phoneNumber } })
+    if (!otpRecord?.verified) {
+      return NextResponse.json(
+        { error: 'Phone number not verified. Please complete OTP verification first.' },
+        { status: 403 }
+      )
+    }
   }
 
   try {

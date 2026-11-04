@@ -153,7 +153,10 @@ export default function RegistrationForm() {
     setSubmitted(false)
   }, [])
 
-  // ── Step 1: Send OTP ───────────────────────────────────────────────────────
+  // Whether OTP is required (controlled by NEXT_PUBLIC_REQUIRE_OTP env var)
+  const otpRequired = process.env.NEXT_PUBLIC_REQUIRE_OTP !== 'false'
+
+  // ── Step 1: Send OTP (or skip directly to form) ────────────────────────────
   async function handleSendOtp(e: React.FormEvent) {
     e.preventDefault()
     const digits = form.localPhone.replace(/\D/g, '')
@@ -161,6 +164,13 @@ export default function RegistrationForm() {
       setErrors({ phone: `Phone number must be exactly ${country.maxLen} digits · ${country.maxLen} இலக்கம் தேவை` })
       return
     }
+
+    // Skip OTP — go directly to form
+    if (!otpRequired) {
+      setStep('form')
+      return
+    }
+
     setLoading(true)
     setErrors({})
     try {
