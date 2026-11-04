@@ -153,9 +153,6 @@ export default function RegistrationForm() {
     setSubmitted(false)
   }, [])
 
-  // Whether OTP is required (controlled by NEXT_PUBLIC_REQUIRE_OTP env var)
-  const otpRequired = process.env.NEXT_PUBLIC_REQUIRE_OTP !== 'false'
-
   // ── Step 1: Send OTP (or skip directly to form) ────────────────────────────
   async function handleSendOtp(e: React.FormEvent) {
     e.preventDefault()
@@ -166,7 +163,7 @@ export default function RegistrationForm() {
     }
 
     // Skip OTP — go directly to form
-    if (!otpRequired) {
+    if (process.env.NEXT_PUBLIC_REQUIRE_OTP === 'false') {
       setStep('form')
       return
     }
