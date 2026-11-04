@@ -117,7 +117,16 @@ export default function RegistrationForm() {
 
   async function checkPhoneDuplicate() {
     const digits = form.localPhone.replace(/\D/g, '')
-    if (!digits || digits.length !== country.maxLen) return
+    const c = COUNTRIES.find(x => x.code === form.countryCode) ?? COUNTRIES[0]
+    if (!digits) {
+      setErrors(prev => ({ ...prev, phone: 'கைபேசி எண் தேவை / Phone number required' }))
+      return
+    }
+    if (digits.length < c.maxLen) {
+      setErrors(prev => ({ ...prev, phone: `${c.maxLen} digits required` }))
+      return
+    }
+    setErrors(prev => { const e = { ...prev }; delete e.phone; return e })
     setPhoneChecking(true)
     try {
       const res = await fetch(`/api/members/check?phone=${encodeURIComponent(form.countryCode + digits)}`)
@@ -271,6 +280,12 @@ export default function RegistrationForm() {
   // ── Step 3: Submit registration ────────────────────────────────────────────
   function validateForm(): FE {
     const e: FE = {}
+    const c = COUNTRIES.find(x => x.code === form.countryCode) ?? COUNTRIES[0]
+    const digits = form.localPhone.replace(/\D/g, '')
+    if (process.env.NEXT_PUBLIC_REQUIRE_OTP !== 'true') {
+      if (!digits) e.phone = 'கைபேசி எண் தேவை / Phone number required'
+      else if (digits.length < c.maxLen) e.phone = `${c.maxLen} digits required`
+    }
     if (!form.name.trim())   e.name = 'பெயர் தேவை / Name is required'
     if (!form.classBatch)    e.classBatch = 'வகுப்பு தேர்வு / Select class'
     const na = parseInt(form.numberOfAdults)
