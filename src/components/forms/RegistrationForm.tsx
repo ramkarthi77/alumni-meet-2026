@@ -454,9 +454,9 @@ export default function RegistrationForm() {
             </select>
             <input type="tel" placeholder="10 digits"
               maxLength={country.maxLen} value={form.localPhone} onChange={set('localPhone')}
-              className={inputCls(!!errors.phoneNumber)} />
+              className={inputCls(!!errors.phone)} />
           </div>
-          {errors.phoneNumber && <p className="text-red-500 text-xs mt-1">{errors.phoneNumber}</p>}
+          {errors.phone && <p className="text-red-500 text-xs mt-1">{errors.phone}</p>}
         </div>
       ) : (
         <div className="flex items-center gap-2 rounded-xl bg-green-50 border border-green-200 px-4 py-2.5">
