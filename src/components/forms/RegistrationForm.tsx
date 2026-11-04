@@ -508,6 +508,24 @@ export default function RegistrationForm() {
         </div>
       )}
 
+      {/* Rest of form — blocked until phone is valid */}
+      {process.env.NEXT_PUBLIC_REQUIRE_OTP !== 'true' && (() => {
+        const digits = form.localPhone.replace(/\D/g, '')
+        const c = COUNTRIES.find(x => x.code === form.countryCode) ?? COUNTRIES[0]
+        const phoneReady = digits.length >= c.maxLen && !errors.phone && !phoneChecking
+        if (!phoneReady) return (
+          <p className="text-center text-xs text-gray-400 py-2">
+            ⬆️ Enter a valid mobile number to continue
+          </p>
+        )
+        return null
+      })()}
+      <fieldset disabled={process.env.NEXT_PUBLIC_REQUIRE_OTP !== 'true' && (() => {
+        const digits = form.localPhone.replace(/\D/g, '')
+        const c = COUNTRIES.find(x => x.code === form.countryCode) ?? COUNTRIES[0]
+        return digits.length < c.maxLen || !!errors.phone || phoneChecking
+      })()} className="contents">
+
       {/* Full Name */}
       <div>
         <Label en="Full Name" ta="முழு பெயர்" required />
@@ -648,8 +666,14 @@ export default function RegistrationForm() {
         </div>
       )}
 
+      </fieldset>
+
       {/* Submit */}
-      <Button type="submit" className="w-full mt-2" size="lg" loading={loading} disabled={submitted} tabIndex={12}>
+      <Button type="submit" className="w-full mt-2" size="lg" loading={loading} disabled={submitted || (process.env.NEXT_PUBLIC_REQUIRE_OTP !== 'true' && (() => {
+        const digits = form.localPhone.replace(/\D/g, '')
+        const c = COUNTRIES.find(x => x.code === form.countryCode) ?? COUNTRIES[0]
+        return digits.length < c.maxLen || !!errors.phone || phoneChecking
+      })())} tabIndex={12}>
         {submitted ? 'பதிவு செய்யப்பட்டது! ✓' : 'Submit Registration · பதிவு செய்க'}
       </Button>
 
