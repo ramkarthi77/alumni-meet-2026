@@ -441,18 +441,36 @@ export default function RegistrationForm() {
     <form onSubmit={handleSubmit} noValidate className="space-y-5 relative">
       <CloseBtn onClick={reset} />
 
-      {/* Verified phone banner */}
-      <div className="flex items-center gap-2 rounded-xl bg-green-50 border border-green-200 px-4 py-2.5">
-        <span className="text-green-600 text-lg">✅</span>
+      {/* Phone number — inline input when OTP is skipped, verified banner when OTP was done */}
+      {process.env.NEXT_PUBLIC_REQUIRE_OTP !== 'true' ? (
         <div>
-          <p className="text-xs font-semibold text-green-800">WhatsApp Verified</p>
-          <p className="text-xs text-green-700 font-mono">{phoneNumber}</p>
+          <Label en="Mobile Number" ta="கைபேசி எண்" required />
+          <div className="flex gap-2">
+            <select value={form.countryCode} onChange={set('countryCode')}
+              className="rounded-xl border border-gray-300 px-2 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#c9a84c] bg-white w-28 shrink-0">
+              {COUNTRIES.map(c => (
+                <option key={c.code} value={c.code}>{c.flag} {c.code}</option>
+              ))}
+            </select>
+            <input type="tel" placeholder="10 digits"
+              maxLength={country.maxLen} value={form.localPhone} onChange={set('localPhone')}
+              className={inputCls(!!errors.phoneNumber)} />
+          </div>
+          {errors.phoneNumber && <p className="text-red-500 text-xs mt-1">{errors.phoneNumber}</p>}
         </div>
-        <button type="button" onClick={() => setStep('phone')}
-          className="ml-auto text-xs text-green-600 hover:underline shrink-0">
-          Change
-        </button>
-      </div>
+      ) : (
+        <div className="flex items-center gap-2 rounded-xl bg-green-50 border border-green-200 px-4 py-2.5">
+          <span className="text-green-600 text-lg">✅</span>
+          <div>
+            <p className="text-xs font-semibold text-green-800">WhatsApp Verified</p>
+            <p className="text-xs text-green-700 font-mono">{phoneNumber}</p>
+          </div>
+          <button type="button" onClick={() => setStep('phone')}
+            className="ml-auto text-xs text-green-600 hover:underline shrink-0">
+            Change
+          </button>
+        </div>
+      )}
 
       {/* Full Name */}
       <div>
