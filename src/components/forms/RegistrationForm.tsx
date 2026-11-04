@@ -486,8 +486,9 @@ export default function RegistrationForm() {
                 <option key={c.code} value={c.code}>{c.flag} {c.code}</option>
               ))}
             </select>
-            <input type="tel" placeholder="10 digits"
-              maxLength={country.maxLen} value={form.localPhone} onChange={set('localPhone')}
+            <input type="tel" placeholder="10 digits" inputMode="numeric" pattern="[0-9]*"
+              maxLength={country.maxLen} value={form.localPhone}
+              onChange={e => { const v = e.target.value.replace(/\D/g, ''); setForm(f => ({ ...f, localPhone: v })) }}
               onBlur={checkPhoneDuplicate}
               className={inputCls(!!errors.phone)} />
           </div>
@@ -508,23 +509,8 @@ export default function RegistrationForm() {
         </div>
       )}
 
-      {/* Rest of form — blocked until phone is valid */}
-      {process.env.NEXT_PUBLIC_REQUIRE_OTP !== 'true' && (() => {
-        const digits = form.localPhone.replace(/\D/g, '')
-        const c = COUNTRIES.find(x => x.code === form.countryCode) ?? COUNTRIES[0]
-        const phoneReady = digits.length >= c.maxLen && !errors.phone && !phoneChecking
-        if (!phoneReady) return (
-          <p className="text-center text-xs text-gray-400 py-2">
-            ⬆️ Enter a valid mobile number to continue
-          </p>
-        )
-        return null
-      })()}
-      <fieldset disabled={process.env.NEXT_PUBLIC_REQUIRE_OTP !== 'true' && (() => {
-        const digits = form.localPhone.replace(/\D/g, '')
-        const c = COUNTRIES.find(x => x.code === form.countryCode) ?? COUNTRIES[0]
-        return digits.length < c.maxLen || !!errors.phone || phoneChecking
-      })()} className="contents">
+      <div className={process.env.NEXT_PUBLIC_REQUIRE_OTP !== 'true' && (form.localPhone.replace(/\D/g,'').length < (COUNTRIES.find(x=>x.code===form.countryCode)??COUNTRIES[0]).maxLen || !!errors.phone || phoneChecking) ? 'pointer-events-none opacity-40 select-none' : ''}>
+      {/* spacer — start of lockable section */}
 
       {/* Full Name */}
       <div>
@@ -666,7 +652,7 @@ export default function RegistrationForm() {
         </div>
       )}
 
-      </fieldset>
+      </div>
 
       {/* Submit */}
       <Button type="submit" className="w-full mt-2" size="lg" loading={loading} disabled={submitted || (process.env.NEXT_PUBLIC_REQUIRE_OTP !== 'true' && (() => {
