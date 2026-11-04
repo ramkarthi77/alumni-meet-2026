@@ -122,6 +122,10 @@ export default function RegistrationForm() {
     setHasMic(!!(window as any).SpeechRecognition || !!(window as any).webkitSpeechRecognition)
     // Reset form on every fresh page load (handles browser back button from success page)
     reset()
+    // Skip OTP step entirely when NEXT_PUBLIC_REQUIRE_OTP is not 'true'
+    if (process.env.NEXT_PUBLIC_REQUIRE_OTP !== 'true') {
+      setStep('form')
+    }
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   // Countdown timer for resend
@@ -162,8 +166,8 @@ export default function RegistrationForm() {
       return
     }
 
-    // Skip OTP — go directly to form
-    if (process.env.NEXT_PUBLIC_REQUIRE_OTP === 'false') {
+    // Skip OTP — go directly to form when NEXT_PUBLIC_REQUIRE_OTP is not 'true'
+    if (process.env.NEXT_PUBLIC_REQUIRE_OTP !== 'true') {
       setStep('form')
       return
     }

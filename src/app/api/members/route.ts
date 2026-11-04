@@ -38,7 +38,7 @@ export async function POST(req: NextRequest) {
   const phoneNumber = String(parsed.data.phoneNumber).trim()
 
   // ── Guard: phone must have passed OTP verification (skipped when REQUIRE_OTP=false) ──
-  const otpRequired = process.env.REQUIRE_OTP !== 'false'
+  const otpRequired = process.env.REQUIRE_OTP === 'true'
   if (otpRequired) {
     const otpRecord = await prisma.otpVerification.findUnique({ where: { phoneNumber } })
     if (!otpRecord?.verified) {
