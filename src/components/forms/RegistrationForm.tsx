@@ -112,6 +112,25 @@ export default function RegistrationForm() {
   const [submitted, setSubmitted] = useState(false)
   const [hasMic, setHasMic]     = useState(false)
 
+  // Phone duplicate check
+  const [phoneChecking, setPhoneChecking] = useState(false)
+
+  async function checkPhoneDuplicate() {
+    const digits = form.localPhone.replace(/\D/g, '')
+    if (!digits || digits.length !== country.maxLen) return
+    setPhoneChecking(true)
+    try {
+      const res = await fetch(`/api/members/check?phone=${encodeURIComponent(form.countryCode + digits)}`)
+      const data = await res.json()
+      if (data.exists) {
+        setErrors(prev => ({ ...prev, phone: 'இந்த எண் ஏற்கனவே பதிவு / This number is already registered.' }))
+      } else {
+        setErrors(prev => { const e = { ...prev }; delete e.phone; return e })
+      }
+    } catch { /* ignore network errors on blur */ }
+    finally { setPhoneChecking(false) }
+  }
+
   // OTP step state
   const [otpValue, setOtpValue]       = useState('')
   const [otpError, setOtpError]       = useState('')
@@ -454,8 +473,10 @@ export default function RegistrationForm() {
             </select>
             <input type="tel" placeholder="10 digits"
               maxLength={country.maxLen} value={form.localPhone} onChange={set('localPhone')}
+              onBlur={checkPhoneDuplicate}
               className={inputCls(!!errors.phone)} />
           </div>
+          {phoneChecking && <p className="text-xs text-gray-400 mt-1">Checking…</p>}
           {errors.phone && <p className="text-red-500 text-xs mt-1">{errors.phone}</p>}
         </div>
       ) : (
